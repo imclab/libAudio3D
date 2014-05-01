@@ -1,0 +1,6 @@
+[submodule "libFFTFilter"]
+	path = libFFTFilter
+	url = https://github.com/jkammerl/libFFTFilter.git
+[submodule "libHRTF"]
+	path = libHRTF
+	url = https://github.com/jkammerl/libHRTF.git
