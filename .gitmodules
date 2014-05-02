@@ -1,6 +1,8 @@
 [submodule "libFFTFilter"]
+        branch = master
 	path = libFFTFilter
 	url = https://github.com/jkammerl/libFFTFilter.git
 [submodule "libHRTF"]
+        branch = master
 	path = libHRTF
 	url = https://github.com/jkammerl/libHRTF.git
