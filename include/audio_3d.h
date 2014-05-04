@@ -22,10 +22,9 @@ private:
 			const std::vector<float>& block_b, std::vector<float>* output);
 	const int sample_rate_;
 	const int block_size_;
-	const std::vector<float>* left_hrtf_;
-	const std::vector<float>* right_hrtf_;
 	float elevation_deg_;
 	float azimuth_deg_;
+	float distance_;
 
 	std::vector<float> xfade_window_;
 	std::vector<float> prev_signal_block_;

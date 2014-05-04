@@ -7,10 +7,9 @@
 Audio3DSource::Audio3DSource(int sample_rate, int block_size) :
 		sample_rate_(sample_rate),
 		block_size_(block_size),
-		left_hrtf_(0),
-		right_hrtf_(0),
 		elevation_deg_(0.0f),
 		azimuth_deg_(0.0f),
+		distance_(0.0f),
 		hrtf_(0),
 		left_fft_filter_(0),
 		right_fft_filter_(0)
@@ -20,9 +19,9 @@ Audio3DSource::Audio3DSource(int sample_rate, int block_size) :
 	CalculateXFadeWindow();
 
 	hrtf_ = new HRTF(sample_rate);
-
 	left_fft_filter_ = new FFTFilter(block_size_);
 	right_fft_filter_ = new FFTFilter(block_size_);
+
 	left_fft_filter_->SetKernel(hrtf_->GetLeftEarHRTF());
 	right_fft_filter_->SetKernel(hrtf_->GetRightEarHRTF());
 }
@@ -42,6 +41,7 @@ void Audio3DSource::SetPosition(int x, int y, int z)
 void Audio3DSource::SetDirection(float elevation_deg, float azimuth_deg, float distance) {
 	elevation_deg_ = elevation_deg;
 	azimuth_deg_ = azimuth_deg;
+	distance_ = distance;
 }
 
 void Audio3DSource::CalculateXFadeWindow() {
@@ -57,13 +57,20 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 	assert(output_left != 0 && output_right != 0);
 
 	left_fft_filter_->AddSignalBlock(input);
-	left_fft_filter_->GetResult(output_left);
+
+	std::vector<float> current_hrtf_output_left;
+	left_fft_filter_->GetResult(&current_hrtf_output_left);
 
 	right_fft_filter_->AddSignalBlock(input);
-	right_fft_filter_->GetResult(output_right);
+
+	std::vector<float> current_hrtf_output_right;
+	right_fft_filter_->GetResult(&current_hrtf_output_right);
 
 	bool new_hrtf_selected = hrtf_->SetDirection(elevation_deg_, azimuth_deg_);
-	if (new_hrtf_selected) {
+	if (!new_hrtf_selected) {
+		output_left->swap(current_hrtf_output_left);
+		output_right->swap(current_hrtf_output_right);
+	} else {
 		// Update filter kernels
 		left_fft_filter_->SetKernel(hrtf_->GetLeftEarHRTF());
 		right_fft_filter_->SetKernel(hrtf_->GetRightEarHRTF());
@@ -73,13 +80,14 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 		right_fft_filter_->AddSignalBlock(prev_signal_block_);
 		right_fft_filter_->AddSignalBlock(input);
 
-		std::vector<float> new_filter_output_left;
-		left_fft_filter_->GetResult(&new_filter_output_left);
-		std::vector<float> new_filter_output_right;
-		right_fft_filter_->GetResult(&new_filter_output_right);
+		std::vector<float> updated_hrtf_output_left;
+		left_fft_filter_->GetResult(&updated_hrtf_output_left);
+		std::vector<float> updated_hrtf_output_right;
+		right_fft_filter_->GetResult(&updated_hrtf_output_right);
 
-		ApplyXFadeWindow(*output_left, new_filter_output_left, output_left);
-		ApplyXFadeWindow(*output_right, new_filter_output_right, output_right);
+		//
+		ApplyXFadeWindow(current_hrtf_output_left, updated_hrtf_output_left, output_left);
+		ApplyXFadeWindow(current_hrtf_output_right, updated_hrtf_output_right, output_right);
 	}
 
 	prev_signal_block_ = input;
