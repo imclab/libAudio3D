@@ -39,7 +39,7 @@ void Audio3DSource::SetPosition(int x, int y, int z)
 	   delete(right_fft_filter_);
    }
 }
-void Audio3DSource::SetDirection(float elevation_deg, float azimuth_deg) {
+void Audio3DSource::SetDirection(float elevation_deg, float azimuth_deg, float distance) {
 	elevation_deg_ = elevation_deg;
 	azimuth_deg_ = azimuth_deg;
 }

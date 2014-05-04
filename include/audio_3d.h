@@ -10,7 +10,7 @@ public:
 	virtual ~Audio3DSource();
 
 	void SetPosition(int x, int y, int z);
-	void SetDirection(float elevation_deg, float azimuth_deg);
+	void SetDirection(float elevation_deg, float azimuth_deg, float distance);
 
 //	first regular process, & check for update & hanning!! fading
 	void ProcessBlock(const std::vector<float>&input,
