@@ -20,11 +20,15 @@ private:
 	void CalculateXFadeWindow();
 	void ApplyXFadeWindow(const std::vector<float>& block_a,
 			const std::vector<float>& block_b, std::vector<float>* output);
+
+	static void ApplyDamping(float damping_factor, std::vector<float>* block);
 	const int sample_rate_;
 	const int block_size_;
 	float elevation_deg_;
 	float azimuth_deg_;
 	float distance_;
+
+	float damping_;
 
 	std::vector<float> xfade_window_;
 	std::vector<float> prev_signal_block_;

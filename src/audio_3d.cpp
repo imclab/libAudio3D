@@ -105,3 +105,11 @@ void Audio3DSource::ApplyXFadeWindow(const std::vector<float>& block_a,
 	}
 }
 
+void Audio3DSource::ApplyDamping(float damping_factor, std::vector<float>* block) {
+	assert(block!=0);
+	for (int i=0; i<block->size(); ++i) {
+		(*block)[i] *= damping_factor;
+	}
+}
+
+
