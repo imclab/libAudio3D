@@ -11,4 +11,6 @@ include_directories(${Audio3D_SOURCE_DIR}/include
                    )
 
 add_library (${PROJECT_NAME} src/audio_3d.cpp) 
-target_link_libraries(${PROJECT_NAME} HRTF)
+target_link_libraries(${PROJECT_NAME} HRTF FFTFilter)
+
+ADD_SUBDIRECTORY (test)
