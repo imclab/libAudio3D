@@ -15,6 +15,7 @@ const int kFramesPerBuffer = 512;
 
 static float elevation_deg = 0;
 static float azimuth_deg = 0;
+static float distance = 1;
 
 static int AudioCallback( const void *inputBuffer, void *outputBuffer,
                          unsigned long framesPerBuffer,
@@ -30,7 +31,7 @@ static int AudioCallback( const void *inputBuffer, void *outputBuffer,
     Audio3DSource* audio_3d = reinterpret_cast<Audio3DSource*>(userData);
     assert(audio_3d!=0);
 
-    audio_3d->SetDirection(elevation_deg, azimuth_deg, 1.0);
+    audio_3d->SetDirection(elevation_deg, azimuth_deg, distance);
 
     std::vector<float> input(framesPerBuffer, 0.0f);
     if( inputBuffer != 0 )
@@ -65,7 +66,6 @@ int main(void)
 
     bool keep_running = true;
 	Audio3DSource audio_3d(kSampleRate, kFramesPerBuffer);
-	audio_3d.SetDirection(0,0, 10);
 
     err = Pa_Initialize();
     if( err != paNoError ) goto error;
@@ -132,10 +132,16 @@ int main(void)
     	case 'r':
 			azimuth_deg += 5;
 			break;
+    	case '+':
+    		distance += 1;
+			break;
+    	case '-':
+    		distance -= 1;
+			break;
     	default:
     		break;
     	}
-    	std::cout<<"Elevation: "<<elevation_deg<<" Azimuth: "<<azimuth_deg<<std::endl;
+    	std::cout<<"Elevation: "<<elevation_deg<<" Azimuth: "<<azimuth_deg<<" Distance: "<<distance <<std::endl;
     }
     err = Pa_CloseStream( stream );
     if( err != paNoError ) goto error;
