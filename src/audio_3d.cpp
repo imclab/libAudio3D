@@ -43,7 +43,15 @@ void Audio3DSource::SetPosition(int x, int y, int z)
 void Audio3DSource::SetDirection(float elevation_deg, float azimuth_deg, float distance) {
 	elevation_deg_ = elevation_deg;
 	azimuth_deg_ = azimuth_deg;
-	distance_ = distance;
+
+	float hrft_distance = hrtf_->GetDistance();
+	distance_ = fmax(distance, hrft_distance);
+	float hrtf_distance_normalizetion = hrft_distance*hrft_distance;
+	float source_distance_damping = 1.0/(distance_*distance_);
+
+	damping_ = hrtf_distance_normalizetion*source_distance_damping;
+	assert(damping_>=0 && damping_<=1.0f);
+
 }
 
 void Audio3DSource::CalculateXFadeWindow() {
@@ -97,6 +105,9 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 	}
 
 	prev_signal_block_ = input;
+
+	ApplyDamping(damping_, output_left);
+	ApplyDamping(damping_, output_right);
 }
 
 void Audio3DSource::ApplyXFadeWindow(const std::vector<float>& block_a,
