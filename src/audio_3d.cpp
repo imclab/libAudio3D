@@ -26,6 +26,8 @@ Audio3DSource::Audio3DSource(int sample_rate, int block_size) :
 	right_fft_filter_->SetKernel(hrtf_->GetRightEarHRTF());
 }
 
+Audio3DSource::~Audio3DSource() {}
+
 void Audio3DSource::SetPosition(int x, int y, int z)
 {
    if (hrtf_!=0) {
@@ -45,6 +47,7 @@ void Audio3DSource::SetDirection(float elevation_deg, float azimuth_deg, float d
 }
 
 void Audio3DSource::CalculateXFadeWindow() {
+	xfade_window_.resize(block_size_);
 	double phase_step = M_PI/2.0/(block_size_-1);
 	for (int i = 0; i < block_size_; ++i) {
 		xfade_window_[i] = sin(i*phase_step);
@@ -74,10 +77,12 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 		// Update filter kernels
 		left_fft_filter_->SetKernel(hrtf_->GetLeftEarHRTF());
 		right_fft_filter_->SetKernel(hrtf_->GetRightEarHRTF());
-		// Update filter state with previous and current signal block
+		// Update filter state with previous signal block
 		left_fft_filter_->AddSignalBlock(prev_signal_block_);
-		left_fft_filter_->AddSignalBlock(input);
 		right_fft_filter_->AddSignalBlock(prev_signal_block_);
+
+		// Filter current input with updated HRTF filters.
+		left_fft_filter_->AddSignalBlock(input);
 		right_fft_filter_->AddSignalBlock(input);
 
 		std::vector<float> updated_hrtf_output_left;
@@ -85,8 +90,9 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 		std::vector<float> updated_hrtf_output_right;
 		right_fft_filter_->GetResult(&updated_hrtf_output_right);
 
-		//
+		output_left->resize(block_size_);
 		ApplyXFadeWindow(current_hrtf_output_left, updated_hrtf_output_left, output_left);
+		output_right->resize(block_size_);
 		ApplyXFadeWindow(current_hrtf_output_right, updated_hrtf_output_right, output_right);
 	}
 
@@ -98,6 +104,7 @@ void Audio3DSource::ApplyXFadeWindow(const std::vector<float>& block_a,
 	assert(output != 0);
 	assert(block_a.size() == block_b.size());
 	assert(block_a.size() == xfade_window_.size());
+	assert(output->size() == xfade_window_.size());
 
 	for (int i = 0; i < block_a.size(); ++i) {
 		(*output)[i] = block_a[i] * xfade_window_[xfade_window_.size() - 1 - i]
