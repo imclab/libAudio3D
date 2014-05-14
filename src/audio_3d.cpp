@@ -3,6 +3,7 @@
 #include "audio_3d.h"
 #include "hrtf.h"
 #include "fft_filter.h"
+#include "reberation.h"
 
 Audio3DSource::Audio3DSource(int sample_rate, int block_size) :
 		sample_rate_(sample_rate),
@@ -11,34 +12,34 @@ Audio3DSource::Audio3DSource(int sample_rate, int block_size) :
 		azimuth_deg_(0.0f),
 		distance_(0.0f),
 		hrtf_(0),
-		left_fft_filter_(0),
-		right_fft_filter_(0)
+		left_hrtf_filter_(0),
+		right_hrtf_filter_(0)
 {
 	prev_signal_block_.resize(block_size, 0.0f);
 
 	CalculateXFadeWindow();
 
-	hrtf_ = new HRTF(sample_rate);
-	left_fft_filter_ = new FFTFilter(block_size_);
-	right_fft_filter_ = new FFTFilter(block_size_);
+	hrtf_ = new HRTF(sample_rate, block_size_);
+	left_hrtf_filter_ = new FFTFilter(block_size_);
+	right_hrtf_filter_ = new FFTFilter(block_size_);
 
-	left_fft_filter_->SetKernel(hrtf_->GetLeftEarHRTF());
-	right_fft_filter_->SetKernel(hrtf_->GetRightEarHRTF());
+	left_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetLeftEarFreqHRTF());
+	right_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetRightEarFreqHRTF());
+
+	int reberation_size = 2048*2;
+	float reberation_duration = 0.100;
+	reberation_ = new Reberation(reberation_size, sample_rate_, reberation_duration);
 }
 
-Audio3DSource::~Audio3DSource() {}
+Audio3DSource::~Audio3DSource() {
+	delete hrtf_;
+	delete left_hrtf_filter_;
+	delete right_hrtf_filter_;
+	delete reberation_;
+}
 
 void Audio3DSource::SetPosition(int x, int y, int z)
 {
-   if (hrtf_!=0) {
-	   delete(hrtf_);
-   }
-   if (left_fft_filter_!=0) {
-	   delete(left_fft_filter_);
-   }
-   if (right_fft_filter_!=0) {
-	   delete(right_fft_filter_);
-   }
 }
 void Audio3DSource::SetDirection(float elevation_deg, float azimuth_deg, float distance) {
 	elevation_deg_ = elevation_deg;
@@ -46,12 +47,8 @@ void Audio3DSource::SetDirection(float elevation_deg, float azimuth_deg, float d
 
 	float hrft_distance = hrtf_->GetDistance();
 	distance_ = fmax(distance, hrft_distance);
-	float hrtf_distance_normalizetion = hrft_distance*hrft_distance;
-	float source_distance_damping = 1.0/(distance_*distance_);
-
-	damping_ = hrtf_distance_normalizetion*source_distance_damping;
+	damping_ = hrft_distance/distance_;
 	assert(damping_>=0 && damping_<=1.0f);
-
 }
 
 void Audio3DSource::CalculateXFadeWindow() {
@@ -67,15 +64,15 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 		std::vector<float>* output_left, std::vector<float>* output_right) {
 	assert(output_left != 0 && output_right != 0);
 
-	left_fft_filter_->AddSignalBlock(input);
+	left_hrtf_filter_->AddSignalBlock(input);
 
 	std::vector<float> current_hrtf_output_left;
-	left_fft_filter_->GetResult(&current_hrtf_output_left);
+	left_hrtf_filter_->GetResult(&current_hrtf_output_left);
 
-	right_fft_filter_->AddSignalBlock(input);
+	right_hrtf_filter_->AddSignalBlock(input);
 
 	std::vector<float> current_hrtf_output_right;
-	right_fft_filter_->GetResult(&current_hrtf_output_right);
+	right_hrtf_filter_->GetResult(&current_hrtf_output_right);
 
 	bool new_hrtf_selected = hrtf_->SetDirection(elevation_deg_, azimuth_deg_);
 	if (!new_hrtf_selected) {
@@ -83,20 +80,20 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 		output_right->swap(current_hrtf_output_right);
 	} else {
 		// Update filter kernels
-		left_fft_filter_->SetKernel(hrtf_->GetLeftEarHRTF());
-		right_fft_filter_->SetKernel(hrtf_->GetRightEarHRTF());
+		left_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetLeftEarFreqHRTF());
+		right_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetRightEarFreqHRTF());
 		// Update filter state with previous signal block
-		left_fft_filter_->AddSignalBlock(prev_signal_block_);
-		right_fft_filter_->AddSignalBlock(prev_signal_block_);
+		left_hrtf_filter_->AddSignalBlock(prev_signal_block_);
+		right_hrtf_filter_->AddSignalBlock(prev_signal_block_);
 
 		// Filter current input with updated HRTF filters.
-		left_fft_filter_->AddSignalBlock(input);
-		right_fft_filter_->AddSignalBlock(input);
+		left_hrtf_filter_->AddSignalBlock(input);
+		right_hrtf_filter_->AddSignalBlock(input);
 
 		std::vector<float> updated_hrtf_output_left;
-		left_fft_filter_->GetResult(&updated_hrtf_output_left);
+		left_hrtf_filter_->GetResult(&updated_hrtf_output_left);
 		std::vector<float> updated_hrtf_output_right;
-		right_fft_filter_->GetResult(&updated_hrtf_output_right);
+		right_hrtf_filter_->GetResult(&updated_hrtf_output_right);
 
 		output_left->resize(block_size_);
 		ApplyXFadeWindow(current_hrtf_output_left, updated_hrtf_output_left, output_left);
@@ -108,6 +105,9 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
 
 	ApplyDamping(damping_, output_left);
 	ApplyDamping(damping_, output_right);
+
+	// Reberation damping!!
+	reberation_->AddReberation(input, output_left, output_right);
 }
 
 void Audio3DSource::ApplyXFadeWindow(const std::vector<float>& block_a,

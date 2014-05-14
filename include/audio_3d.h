@@ -1,8 +1,12 @@
+#ifndef AUDIO_3D_SOURCE_H_
+#define AUDIO_3D_SOURCE_H_
+
 
 #include <cstdint>
 #include <vector>
 class FFTFilter;
 class HRTF;
+class Reberation;
 
 class Audio3DSource {
 public:
@@ -33,8 +37,10 @@ private:
 	std::vector<float> prev_signal_block_;
 
 	HRTF* hrtf_;
-		FFTFilter* left_fft_filter_;
-		FFTFilter* right_fft_filter_;
+	FFTFilter* left_hrtf_filter_;
+	FFTFilter* right_hrtf_filter_;
+
+	Reberation* reberation_;
 };
 
 /*
@@ -44,3 +50,5 @@ private:
     dataOut[i] = multiplier * dataIn[i];
 }
  */
+
+#endif
