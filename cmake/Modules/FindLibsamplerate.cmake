@@ -1,0 +1,28 @@
+# - Try to find LIBSAMPLERATE
+# Once done this will define
+#  LIBSAMPLERATE_FOUND - System has LIBSAMPLERATE
+#  LIBSAMPLERATE_INCLUDE_DIRS - The LIBSAMPLERATE include directories
+#  LIBSAMPLERATE_LIBRARIES - The libraries needed to use LIBSAMPLERATE
+#  LIBSAMPLERATE_DEFINITIONS - Compiler switches required for using LIBSAMPLERATE
+
+find_package(PkgConfig)
+pkg_check_modules(PC_LIBSAMPLERATE QUIET samplerate)
+set(LIBSAMPLERATE_DEFINITIONS ${PC_LIBSAMPLERATE_CFLAGS_OTHER})
+
+find_path(LIBSAMPLERATE_INCLUDE_DIR samplerate.h
+          HINTS ${PC_RESAMPLE_INCLUDEDIR} ${PC_RESAMPLE_INCLUDE_DIRS}
+         )
+
+find_library(LIBSAMPLERATE_LIBRARY NAMES RESAMPLE samplerate
+             HINTS ${PC_RESAMPLE_LIBDIR} ${PC_RESAMPLE_LIBRARY_DIRS} )
+
+set(LIBSAMPLERATE_LIBRARIES ${LIBSAMPLERATE_LIBRARY} )
+set(LIBSAMPLERATE_INCLUDE_DIRS ${LIBSAMPLERATE_INCLUDE_DIR} )
+
+include(FindPackageHandleStandardArgs)
+# handle the QUIETLY and REQUIRED arguments and set LIBSAMPLERATE_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args(LIBSAMPLERATE  DEFAULT_MSG
+                                  LIBSAMPLERATE_LIBRARY LIBSAMPLERATE_INCLUDE_DIR)
+
+mark_as_advanced(LIBSAMPLERATE_INCLUDE_DIR LIBSAMPLERATE_LIBRARY )
