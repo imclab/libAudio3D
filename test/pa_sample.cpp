@@ -11,7 +11,7 @@
 #include "portaudio.h"
 
 const int kSampleRate = 44100;
-const int kFramesPerBuffer = 512;
+const int kFramesPerBuffer = 256;
 
 static float elevation_deg = 0;
 static float azimuth_deg = 0;
