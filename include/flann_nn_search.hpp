@@ -70,8 +70,9 @@ class FLANNNeighborSearch {
     flann_index_->knnSearch(query_mat, index_mat, distances_mat, 1,
                             flann::SearchParams());
 
-    assert(result_index >= 0
-           && result_index < static_cast<int>(hrtf_indices_.size()));
+    assert(
+        result_index >= 0
+            && result_index < static_cast<int>(hrtf_indices_.size()));
     return hrtf_indices_[result_index];
   }
 

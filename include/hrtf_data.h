@@ -29,14 +29,7 @@ struct HRTFDataT {
   const short (*data)[2][kHRTFFilterLen];
 };
 
-static const HRTFDataT kHRTFDataSet = {
-    kHRTFDataIdentifier,
-    kHRTFNum,
-    kHRTFFilterLen,
-    kHRTFSampleRate,
-    kHRTFDirection,
-    kDistanceMeter,
-    kHRTFData
-};
+static const HRTFDataT kHRTFDataSet = { kHRTFDataIdentifier, kHRTFNum,
+    kHRTFFilterLen, kHRTFSampleRate, kHRTFDirection, kDistanceMeter, kHRTFData };
 
 #endif

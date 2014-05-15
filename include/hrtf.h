@@ -26,7 +26,8 @@ class HRTF {
   int GetFilterSize() const;
 
  private:
-  static void ConvertShortToFloatVector(const short* input_ptr,int input_size,std::vector<float>* output);
+  static void ConvertShortToFloatVector(const short* input_ptr, int input_size,
+                                        std::vector<float>* output);
 
   void ResampleHRTFs();
   void FreqTransformHRTFs();
