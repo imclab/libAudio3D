@@ -110,7 +110,7 @@ void Audio3DSource::ProcessBlock(const std::vector<float>&input,
   ApplyDamping(damping_, output_right);
 
   // Reberation damping!!
-  reberation_->AddReberation(input, output_left, output_right);
+  reberation_->RenderReberation(input, output_left, output_right);
 }
 
 void Audio3DSource::ApplyXFadeWindow(const std::vector<float>& block_a,

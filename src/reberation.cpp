@@ -43,7 +43,7 @@ float Reberation::GetQuietPeriod() const {
   return quiet_period_sec_;
 }
 
-void Reberation::AddReberation(const std::vector<float>& input,
+void Reberation::RenderReberation(const std::vector<float>& input,
                                std::vector<float>* output_left,
                                std::vector<float>* output_right) {
   assert(output_left && output_right);

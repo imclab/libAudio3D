@@ -8,9 +8,9 @@ class Reberation {
   Reberation(int block_size, int sampling_rate, float reberation_time);
   float GetQuietPeriod() const;
 
-  void AddReberation(const std::vector<float>& input,
-                     std::vector<float>* output_left,
-                     std::vector<float>* output_right);
+  void RenderReberation(const std::vector<float>& input,
+                        std::vector<float>* output_left,
+                        std::vector<float>* output_right);
 
   const std::vector<float>& GetImpulseResponseLeft() const;
   const std::vector<float>& GetImpulseResponseRight() const;

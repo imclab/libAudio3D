@@ -4,17 +4,7 @@
 #include <cmath>
 #include <assert.h>
 #include <flann/flann.hpp>
-
-static const int kDimensions = 3;
-
-union Point3D {
-  float data[kDimensions];
-  struct {
-    float x;
-    float y;
-    float z;
-  };
-};
+#include "common.h"
 
 class FLANNNeighborSearch {
  public:

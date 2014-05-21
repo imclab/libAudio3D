@@ -26,5 +26,14 @@ add_test(
     COMMAND test_fft
 )
 
+add_executable(test_room_model test_room_model.cpp)
+target_link_libraries(test_room_model room_model ${GTEST_LIBRARY} ${GTEST_MAIN_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+add_test(
+    NAME test_room_model
+    COMMAND test_room_model
+)
+
+
 add_executable(pa_sample pa_sample.cpp)
 target_link_libraries(pa_sample ${PROJECT_NAME} ${PORTAUDIO_LIBRARIES})

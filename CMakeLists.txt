@@ -37,4 +37,6 @@ add_library (${PROJECT_NAME} src/audio_3d.cpp
             ) 
 target_link_libraries(${PROJECT_NAME} hrtf fft_filter)
 
+add_library (room_model src/room_model.cpp) 
+
 ADD_SUBDIRECTORY (test)
