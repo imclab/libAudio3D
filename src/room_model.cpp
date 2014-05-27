@@ -2,7 +2,9 @@
 #include <cmath>
 #include "room_model.h"
 
-RoomModel::RoomModel() {
+RoomModel::RoomModel(int reflection_order)
+    : source_pos_changed_(true),
+      reflection_order_(reflection_order) {
   source_pos_.x = source_pos_.y = source_pos_.z = 0.0f;
 }
 
@@ -18,73 +20,105 @@ void RoomModel::SetSourcePosition(float x, float y, float z) {
   SetSourcePosition(source_pos);
 }
 
-
 void RoomModel::SetSourcePosition(const Point3D& source_pos) {
-  source_pos_ = source_pos;
+  if (source_pos_.x != source_pos.x || source_pos_.y != source_pos.y
+      || source_pos_.z != source_pos.z) {
+    source_pos_changed_=true;
+    source_pos_ = source_pos;
+  }
 }
 
 void RoomModel::DefineBox(float width, float height, float depth,
                           float damping) {
-  AddWall(1.0, 0.0, 0.0, -0.5 * width, damping);
-  AddWall(-1.0, 0.0, 0.0, 0.5 * width, damping);
+  float half_width = 0.5 * width;
+  AddAcousticWall(1.0, 0.0, 0.0, half_width, damping);
+  AddAcousticWall(-1.0, 0.0, 0.0, half_width, damping);
 
-  AddWall(0.0, 1.0, 0.0, -0.5 * height, damping);
-  AddWall(0.0, -1.0, 0.0, 0.5 * height, damping);
+  float half_height = 0.5 * height;
+  AddAcousticWall(0.0, 1.0, 0.0, half_height, damping);
+  AddAcousticWall(0.0, -1.0, 0.0, half_height, damping);
 
-  AddWall(0.0, 0.0, 1.0, -0.5 * depth, damping);
-  AddWall(0.0, 0.0, -1.0, 0.5 * depth, damping);
+  float half_depth = 0.5 * depth;
+  AddAcousticWall(0.0, 0.0, 1.0, half_depth, damping);
+  AddAcousticWall(0.0, 0.0, -1.0, half_depth, damping);
 }
 
-void RoomModel::AddWall(float a, float b, float c, float d, float damping) {
+void RoomModel::AddAcousticWall(float a, float b, float c, float d,
+                                    float damping) {
   assert(
-      fabs(sqrt(a * a + b * b + c * c) - 1.0) < 1e-5
-          && "Plane normal must be normalized to 1.0");
+      fabs(sqrt(a * a + b * b + c * c) - 1.0) < 1e-5 && "Plane normal must be normalized to 1.0");
+  assert(
+      acoustic_sources_.size()==0 && "Wall configuration cannot be changed after first rendering");
+
   WallModel new_wall;
-  new_wall.a = a;
-  new_wall.b = b;
-  new_wall.c = c;
-  new_wall.d = d;
+  new_wall.plane.a = a;
+  new_wall.plane.b = b;
+  new_wall.plane.c = c;
+  new_wall.plane.d = d;
   new_wall.damping = damping;
   walls_.push_back(new_wall);
 }
 
-void RoomModel::RenderReflections(
-    int reflection_order, std::vector<AcousticSource>* acoustic_sources) {
-  assert(acoustic_sources);
-  acoustic_sources->clear();
+const std::vector<AcousticSource>& RoomModel::RenderReflections() {
+  if (source_pos_changed_==false) {
+    return acoustic_sources_;
+  }
+  source_pos_changed_ = false;
+  acoustic_sources_.clear();
 
   AcousticSource initial_source;
   initial_source.pos = source_pos_;
   initial_source.damping = 1.0f;
   initial_source.reflections = 0;
-  acoustic_sources->push_back(initial_source);
+  initial_source.do_render = true;
 
-  for (int ro = 0; ro < reflection_order; ++ro) {
-    std::vector<AcousticSource> new_rays;
-    new_rays.reserve(acoustic_sources->size() * walls_.size());
+  std::vector<AcousticSource> prev_sources;
+  prev_sources.push_back(initial_source);
+  acoustic_sources_.push_back(initial_source);
 
-    for (int s = 0; s < acoustic_sources->size(); ++s) {
+  for (int ro = 0; ro < reflection_order_; ++ro) {
+    std::vector<AcousticSource> new_sources;
+    new_sources.reserve(prev_sources.size() * walls_.size());
+
+    for (int s = 0; s < prev_sources.size(); ++s) {
       for (int w = 0; w < walls_.size(); ++w) {
         const WallModel& wall = walls_[w];
-        const AcousticSource& origin = (*acoustic_sources)[s];
+        const AcousticSource& origin = prev_sources[s];
 
-        float wall_distance = origin.pos.x * wall.a + origin.pos.y * wall.b
-            + origin.pos.z * wall.c + wall.d;
-printf("%d Distance: %.4f\n", w, wall_distance);
-        if (wall_distance > 0) {
+        if (origin.do_render==false) {
           AcousticSource new_source;
-          float virtual_distance = 2.0f * wall_distance;
-printf("%d VDistance: %.4f\n", w, virtual_distance);
-          new_source.pos.x = origin.pos.x + wall.a * virtual_distance;
-          new_source.pos.y = origin.pos.y + wall.b * virtual_distance;
-          new_source.pos.z = origin.pos.z + wall.c * virtual_distance;
+          new_source.do_render = false;
+          new_sources.push_back(new_source);
+          continue;
+        }
+
+        float wall_distance = origin.pos.x * wall.plane.a
+            + origin.pos.y * wall.plane.b + origin.pos.z * wall.plane.c
+            + wall.plane.d;
+
+        AcousticSource new_source;
+
+        if (wall_distance > 0) {
+          float virtual_distance = -2.0f * wall_distance;
+          new_source.pos.x = origin.pos.x + wall.plane.a * virtual_distance;
+          new_source.pos.y = origin.pos.y + wall.plane.b * virtual_distance;
+          new_source.pos.z = origin.pos.z + wall.plane.c * virtual_distance;
           new_source.reflections = origin.reflections + 1;
           new_source.damping = origin.damping * wall.damping;
-          new_rays.push_back(new_source);
+          new_source.do_render = true;
+          new_sources.push_back(new_source);
+        } else {
+          // Source is behind the wall -> do not render it
+          new_source.do_render = false;
+          new_sources.push_back(new_source);
         }
       }
-    }
-    acoustic_sources->insert(acoustic_sources->end(), new_rays.begin(), new_rays.end());
-  }
-}
 
+    }
+    acoustic_sources_.insert(acoustic_sources_.end(), new_sources.begin(),
+                             new_sources.end());
+    prev_sources.swap(new_sources);
+  }
+
+  return acoustic_sources_;
+}
