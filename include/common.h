@@ -1,6 +1,8 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+static const float kSoundSpeedMeterPerSecond = 340.0;
+
 static const int kDimensions = 3;
 
 union Point3D {
@@ -16,9 +18,10 @@ struct AcousticSource {
   Point3D pos;
   float damping;
   int reflections;
+  bool do_render;
 };
 
-union WallModel{
+union Plane {
   float data[4];  // plane equation
   struct {
     float a;
@@ -26,7 +29,13 @@ union WallModel{
     float c;
     float d;
   };
+};
+
+struct WallModel {
+  Plane plane;
   float damping;
 };
+
+
 
 #endif COMMON_H_

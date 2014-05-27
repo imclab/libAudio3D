@@ -1,19 +1,23 @@
-#ifndef AUDIO_3D_SOURCE_H_
-#define AUDIO_3D_SOURCE_H_
+#ifndef HRTF_FILTER_H_
+#define HRTF_FILTER_H_
 
-#include <cstdint>
+#include <stdint.h>
 #include <vector>
+
+#include "config.h"
+
 class FFTFilter;
 class HRTF;
 class Reberation;
 
-class Audio3DSource {
+class HRTFFilter {
  public:
-  Audio3DSource(int sample_rate, int block_size);
-  virtual ~Audio3DSource();
+  HRTFFilter(const Audio3DConfigT& config);
+  virtual ~HRTFFilter();
 
-  void SetPosition(int x, int y, int z);
-  void SetDirection(float elevation_deg, float azimuth_deg, float distance);
+  void SetSourcePosition(int x, int y, int z);
+  void SetSourceDirection(float elevation_deg, float azimuth_deg,
+                             float distance);
 
   void ProcessBlock(const std::vector<float>&input,
                     std::vector<float>* output_left,
@@ -24,9 +28,8 @@ class Audio3DSource {
                         const std::vector<float>& block_b,
                         std::vector<float>* output);
 
-  static void ApplyDamping(float damping_factor, std::vector<float>* block);
-  const int sample_rate_;
-  const int block_size_;
+  const Audio3DConfigT config_;
+
   float elevation_deg_;
   float azimuth_deg_;
   float distance_;
@@ -43,4 +46,4 @@ class Audio3DSource {
   Reberation* reberation_;
 };
 
-#endif
+#endif  // HRTF_FILTER_H_

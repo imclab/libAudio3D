@@ -35,5 +35,5 @@ add_test(
 )
 
 
-add_executable(pa_sample pa_sample.cpp)
-target_link_libraries(pa_sample ${PROJECT_NAME} ${PORTAUDIO_LIBRARIES})
+#add_executable(pa_sample pa_sample.cpp)
+#target_link_libraries(pa_sample ${PROJECT_NAME} ${PORTAUDIO_LIBRARIES})

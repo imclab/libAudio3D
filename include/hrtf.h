@@ -5,18 +5,17 @@
 #include <utility>
 #include <vector>
 
+#include <config.h>
+
 class FLANNNeighborSearch;
 
 class HRTF {
  public:
-  HRTF(int sample_rate, int block_size);
+  HRTF(const Audio3DConfigT& config);
   virtual ~HRTF();
 
-  bool SetDirection(float elevation_deg, float azimuth_deg);
-  void GetDirection(float* elevation_deg, float* azimuth_deg) const;
-
-  const std::vector<float>& GetLeftEarTimeHRTF() const;
-  const std::vector<float>& GetRightEarTimeHRTF() const;
+  bool SetSourceDirection(float elevation_deg, float azimuth_deg,
+                             float distance);
 
   const std::vector<float>& GetLeftEarFreqHRTF() const;
   const std::vector<float>& GetRightEarFreqHRTF() const;
@@ -30,15 +29,17 @@ class HRTF {
                                         std::vector<float>* output);
 
   void ResampleHRTFs();
-  void FreqTransformHRTFs();
+  void PrecalculateFreqHRTFs();
   void InitNeighborSearch();
 
-  int sample_rate_;
-  int block_size_;
+  const Audio3DConfigT config_;
+
+  int num_distance_intervals_;
 
   FLANNNeighborSearch* hrtf_nn_search_;
 
   int hrtf_index_;
+  int distance_index_;
   bool left_right_swap_;
 
   float hrtf_elevation_deg_;
@@ -49,7 +50,7 @@ class HRTF {
   typedef std::vector<float> ResampledHRTFT;
   typedef std::pair<ResampledHRTFT, ResampledHRTFT> ResampledHRTFPairT;
   std::vector<ResampledHRTFPairT> hrtf_resampled_time_domain_;
-  std::vector<ResampledHRTFPairT> hrtf_resampled_freq_domain_;
+  std::vector<std::vector<ResampledHRTFPairT> > hrtf_with_distance_freq_domain_;
 
 };
 

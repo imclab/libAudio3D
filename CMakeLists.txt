@@ -32,7 +32,7 @@ if(USE_MIT_KEMAR_DATASET)
 endif(USE_MIT_KEMAR_DATASET)
 target_link_libraries(hrtf resampler)
 
-add_library (${PROJECT_NAME} src/audio_3d.cpp
+add_library (${PROJECT_NAME} src/hrtf_filter.cpp
                              src/reberation.cpp
             ) 
 target_link_libraries(${PROJECT_NAME} hrtf fft_filter)
