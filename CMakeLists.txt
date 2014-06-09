@@ -13,6 +13,7 @@ include_directories(SYSTEM
                     ${FLANN_INCLUDE_DIRS}
                     ${LIBSAMPLERATE_INCLUDE_DIRS}
                     ${Audio3D_SOURCE_DIR}/third_party/kissfft
+                    ${Audio3D_SOURCE_DIR}/third_party/portaudio/include
                     ${Audio3D_SOURCE_DIR}/include 
                     ${Audio3D_SOURCE_DIR}/data 
                    )
@@ -35,12 +36,11 @@ endif(USE_MIT_KEMAR_DATASET)
 target_link_libraries(hrtf resampler)
 
 add_library (${PROJECT_NAME} src/common.cpp
+                             src/room_model.cpp
                              src/hrtf_filter.cpp
                              src/reberation.cpp
                              src/audio_render.cpp
             ) 
 target_link_libraries(${PROJECT_NAME} hrtf fft_filter)
-
-add_library (room_model src/room_model.cpp) 
 
 ADD_SUBDIRECTORY (test)

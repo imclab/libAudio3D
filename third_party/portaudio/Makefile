@@ -423,6 +423,60 @@ src/hostapi/skeleton/pa_hostapi_skeleton.c.s:
 	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.s
 .PHONY : src/hostapi/skeleton/pa_hostapi_skeleton.c.s
 
+src/os/unix/pa_unix_hostapis.o: src/os/unix/pa_unix_hostapis.c.o
+.PHONY : src/os/unix/pa_unix_hostapis.o
+
+# target to build an object file
+src/os/unix/pa_unix_hostapis.c.o:
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.o
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.o
+.PHONY : src/os/unix/pa_unix_hostapis.c.o
+
+src/os/unix/pa_unix_hostapis.i: src/os/unix/pa_unix_hostapis.c.i
+.PHONY : src/os/unix/pa_unix_hostapis.i
+
+# target to preprocess a source file
+src/os/unix/pa_unix_hostapis.c.i:
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.i
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.i
+.PHONY : src/os/unix/pa_unix_hostapis.c.i
+
+src/os/unix/pa_unix_hostapis.s: src/os/unix/pa_unix_hostapis.c.s
+.PHONY : src/os/unix/pa_unix_hostapis.s
+
+# target to generate assembly for a file
+src/os/unix/pa_unix_hostapis.c.s:
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.s
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.s
+.PHONY : src/os/unix/pa_unix_hostapis.c.s
+
+src/os/unix/pa_unix_util.o: src/os/unix/pa_unix_util.c.o
+.PHONY : src/os/unix/pa_unix_util.o
+
+# target to build an object file
+src/os/unix/pa_unix_util.c.o:
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.o
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.o
+.PHONY : src/os/unix/pa_unix_util.c.o
+
+src/os/unix/pa_unix_util.i: src/os/unix/pa_unix_util.c.i
+.PHONY : src/os/unix/pa_unix_util.i
+
+# target to preprocess a source file
+src/os/unix/pa_unix_util.c.i:
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.i
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.i
+.PHONY : src/os/unix/pa_unix_util.c.i
+
+src/os/unix/pa_unix_util.s: src/os/unix/pa_unix_util.c.s
+.PHONY : src/os/unix/pa_unix_util.s
+
+# target to generate assembly for a file
+src/os/unix/pa_unix_util.c.s:
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.s
+	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.s
+.PHONY : src/os/unix/pa_unix_util.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -466,6 +520,12 @@ help:
 	@echo "... src/hostapi/skeleton/pa_hostapi_skeleton.o"
 	@echo "... src/hostapi/skeleton/pa_hostapi_skeleton.i"
 	@echo "... src/hostapi/skeleton/pa_hostapi_skeleton.s"
+	@echo "... src/os/unix/pa_unix_hostapis.o"
+	@echo "... src/os/unix/pa_unix_hostapis.i"
+	@echo "... src/os/unix/pa_unix_hostapis.s"
+	@echo "... src/os/unix/pa_unix_util.o"
+	@echo "... src/os/unix/pa_unix_util.i"
+	@echo "... src/os/unix/pa_unix_util.s"
 .PHONY : help
 
 

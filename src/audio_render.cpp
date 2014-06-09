@@ -50,9 +50,7 @@ void AudioRender::RenderAudio(const std::vector<float>&input,
 
     for (int i = 0; i < acoustic_sources_.size(); ++i) {
       const AcousticSource& source = acoustic_sources_[i];
-
-      const Point3D acoustic_ray = source.pos-listener_pos_;
-      const HRTFInfo& source_hrtf = hrtf_lookup_->GetHRTFInfo(acoustic_ray);
+      const HRTFInfo& source_hrtf = hrtf_lookup_->GetHRTFInfo(source.pos);
       if (source_hrtf!=hftf_infos_[i]) {
         hftf_infos_[i] = source_hrtf;
         hrtf_rendering_needed = true;
@@ -90,9 +88,6 @@ void AudioRender::RenderAudio(const std::vector<float>&input,
 
   right_fft_filter_->AddSignalBlock(input);
   left_fft_filter_->GetResult(output_right);
-
-
-
 
 }
 

@@ -1,21 +1,20 @@
 
 #include <assert.h>
-#include <iostream>
+#include <stdio.h>
 #include <vector>
 
 #include <termios.h>
 #include <unistd.h>
 
 #include "audio_render.h"
+#include "room_model.h"
 
 #include "portaudio.h"
 
 const int kSampleRate = 44100;
 const int kFramesPerBuffer = 256;
 
-static float elevation_deg = 0;
-static float azimuth_deg = 0;
-static float distance = 1;
+static Point3D source_pos = {0.5, 0.5, 0.5};
 
 static int AudioCallback( const void *inputBuffer, void *outputBuffer,
                          unsigned long framesPerBuffer,
@@ -28,10 +27,10 @@ static int AudioCallback( const void *inputBuffer, void *outputBuffer,
     unsigned int i;
     (void) timeInfo; /* Prevent unused variable warnings. */
     (void) statusFlags;
-    Audio3DSource* audio_3d = reinterpret_cast<Audio3DSource*>(userData);
-    assert(audio_3d!=0);
+    AudioRender* audio_render = reinterpret_cast<AudioRender*>(userData);
+    assert(audio_render!=0);
 
-    audio_3d->SetDirection(elevation_deg, azimuth_deg, distance);
+    audio_render->SetSourcePosition(source_pos);
 
     std::vector<float> input(framesPerBuffer, 0.0f);
     if( inputBuffer != 0 )
@@ -46,7 +45,7 @@ static int AudioCallback( const void *inputBuffer, void *outputBuffer,
 
     std::vector<float> output_left;
     std::vector<float> output_right;
-    audio_3d->ProcessBlock(input, &output_left, &output_right);
+    audio_render->RenderAudio(input, &output_left, &output_right);
 
     assert(output_left.size()==framesPerBuffer);
     assert(output_right.size()==framesPerBuffer);
@@ -65,7 +64,11 @@ int main(void)
     PaError err;
 
     bool keep_running = true;
-    AudioRender audio_3d(kSampleRate, kFramesPerBuffer);
+
+    RoomModel room_model;
+    room_model.DefineBox(5, 2, 3, 0.7);
+
+    AudioRender audio_render(config, &room_model);
 
     err = Pa_Initialize();
     if( err != paNoError ) goto error;
@@ -98,7 +101,7 @@ int main(void)
               kFramesPerBuffer,
               paClipOff,
               AudioCallback,
-              &audio_3d);
+              &audio_render);
     if( err != paNoError ) goto error;
 
     err = Pa_StartStream( stream );
@@ -120,28 +123,28 @@ int main(void)
     	case 27:
     		keep_running = false;
     		break;
-    	case 'u':
-    		elevation_deg += 5;
+    	case 'x':
+    		source_pos.x -= 0.1;
     		break;
-    	case 'd':
-    		elevation_deg -= 5;
+    	case 'X':
+    	  source_pos.x += 0.1;
     		break;
-    	case 'l':
-    		azimuth_deg -= 5;
+    	case 'y':
+    	  source_pos.y -= 0.1;
     		break;
-    	case 'r':
-			azimuth_deg += 5;
-			break;
-    	case '+':
-    		distance += 1;
-			break;
-    	case '-':
-    		distance -= 1;
-			break;
+      case 'Y':
+        source_pos.y += 0.1;
+        break;
+      case 'z':
+         source_pos.z -= 0.1;
+         break;
+      case 'Z':
+         source_pos.z += 0.1;
+         break;
     	default:
     		break;
     	}
-    	std::cout<<"Elevation: "<<elevation_deg<<" Azimuth: "<<azimuth_deg<<" Distance: "<<distance <<std::endl;
+    	std::cout<<"Source Pos: "<<source_pos<<std::endl;
     }
     err = Pa_CloseStream( stream );
     if( err != paNoError ) goto error;

@@ -17,6 +17,11 @@ Point3D operator-(const Point3D& point_a, const Point3D& point_b) {
   return ret;
 }
 
+std::ostream& operator<<(std::ostream& stream, const Point3D& point) {
+  stream << "x: " << point.x << ", y: " << point.y << ", z: " << point.z;
+  return stream;
+}
+
 float PointDot(const Point3D& point_a, const Point3D& point_b) {
   return point_a.x * point_b.x + point_a.y * point_b.y + point_a.z * point_b.z;
 }
@@ -25,11 +30,10 @@ float VecLen(const Point3D& point_a) {
   return sqrt(PointDot(point_a, point_a));
 }
 
-
-HRTFInfo:: HRTFInfo()
-: distance_index(-1),
-  hrtf_index(-1),
-  left_right_swap(false) {
+HRTFInfo::HRTFInfo()
+    : distance_index(-1),
+      hrtf_index(-1),
+      left_right_swap(false) {
 }
 
 bool operator==(const HRTFInfo& hrtf_a, const HRTFInfo& hrtf_b) {

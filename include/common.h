@@ -4,6 +4,7 @@
 #include <cmath>
 #include <complex>
 #include <vector>
+#include <iostream>
 #include <assert.h>
 
 static const float kSoundSpeedMeterPerSecond = 340.0;
@@ -24,6 +25,8 @@ union Point3D {
 Point3D operator+(const Point3D& point_a, const Point3D& point_b) ;
 
 Point3D operator-(const Point3D& point_a, const Point3D& point_b);
+
+std::ostream& operator<<(std::ostream& stream, const Point3D& point);
 
 float PointDot(const Point3D& point_a, const Point3D& point_b);
 

@@ -7,7 +7,7 @@ find_package (Threads)
 #MESSAGE( STATUS "PORTAUDIO_INCLUDE_DIRS:         " ${PORTAUDIO_INCLUDE_DIRS} )
 
 include_directories(${GTEST_INCLUDE_DIR})
-LINK_DIRECTORIES(/opt/local/lib)
+#LINK_DIRECTORIES(/opt/local/lib)
 
 add_executable(test_fft_filter test_fft_filter.cpp)
 target_link_libraries(test_fft_filter ${PROJECT_NAME} ${GTEST_LIBRARY} ${GTEST_MAIN_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
@@ -34,5 +34,5 @@ add_test(
 #)
 
 
-#add_executable(pa_sample pa_sample.cpp)
-#target_link_libraries(pa_sample ${PROJECT_NAME} portaudio)
+add_executable(pa_sample pa_sample.cpp)
+target_link_libraries(pa_sample ${PROJECT_NAME} portaudio_static)
