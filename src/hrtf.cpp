@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "hrtf_data.h"
 #include "fft_filter.h"
 #include "hrtf.h"
@@ -11,7 +13,7 @@ HRTF::HRTF(const Audio3DConfigT& config)
       hrtf_elevation_deg_(-1.0),
       hrtf_azimuth_deg_(-1.0),
       left_right_swap_(false),
-      filter_size_(-1) {
+      filter_time_domain_size_(-1) {
   hrtf_nn_search_ = new FLANNNeighborSearch();
 
   num_distance_intervals_ = (config_.max_distance_meter - kHRTFDataSet.distance)
@@ -21,7 +23,6 @@ HRTF::HRTF(const Audio3DConfigT& config)
   InitNeighborSearch();
   ResampleHRTFs();
   PrecalculateFreqHRTFs();
-  SetSourceDirection(0.0f, 0.0f, 0.0f);
 }
 
 HRTF::~HRTF() {
@@ -38,18 +39,20 @@ void HRTF::InitNeighborSearch() {
   hrtf_nn_search_->BuildIndex();
 }
 
-bool HRTF::SetSourceDirection(float elevation_deg, float azimuth_deg,
-                             float distance) {
-  int new_distance_index = std::min<float>(
-      config_.max_distance_meter,
-      std::max<float>(distance, kHRTFDataSet.distance))
-      / config_.distance_resolution_meter;
-  assert(new_distance_index<num_distance_intervals_);
+HRTFInfo HRTF::GetHRTFInfo(const Point3D& source_pos) {
+  float distance = VecLen(source_pos);
+  float elevation_deg = acos(source_pos.z / distance);
+  float azimuth_deg = atan2(source_pos.y, source_pos.x);
+  return GetHRTFInfo(elevation_deg, azimuth_deg, distance);
+}
 
-  if (elevation_deg == hrtf_elevation_deg_ && azimuth_deg == hrtf_azimuth_deg_
-      && new_distance_index == distance_index_) {
-    return false;
-  }
+HRTFInfo HRTF::GetHRTFInfo(float elevation_deg, float azimuth_deg,
+                             float distance) {
+  float min_max_distance = std::min<float>(
+      config_.max_distance_meter,
+      std::max<float>(distance, kHRTFDataSet.distance));
+  int new_distance_index = min_max_distance / config_.distance_resolution_meter;
+  assert(new_distance_index<num_distance_intervals_);
 
   int new_elevation_deg = elevation_deg;
   int new_azimuth_deg = azimuth_deg;
@@ -64,48 +67,41 @@ bool HRTF::SetSourceDirection(float elevation_deg, float azimuth_deg,
                                                     fabs(new_azimuth_deg));
   assert(hrtf_index >= 0 && hrtf_index < kHRTFDataSet.num_hrtfs);
 
-  if (hrtf_index_ == hrtf_index && new_distance_index == distance_index_) {
-    return false;
-  }
-  hrtf_index_ = hrtf_index;
-  distance_index_ = new_distance_index;
+  bool left_right_swap = (new_azimuth_deg < 0.0f);
 
-  // Right hemisphere
-  hrtf_elevation_deg_ = kHRTFDataSet.direction[hrtf_index][0];
-  hrtf_azimuth_deg_ = kHRTFDataSet.direction[hrtf_index][1];
-  left_right_swap_ = (new_azimuth_deg < 0.0f);
-
-  if (left_right_swap_) {
-    // Left hemisphere corrections
-    hrtf_azimuth_deg_ = kHRTFDataSet.direction[hrtf_index][1] * -1;
-  }
-
-  return true;
+  HRTFInfo return_value;
+  return_value.distance_index=new_distance_index;
+  return_value.hrtf_index=hrtf_index;
+  return_value.left_right_swap=left_right_swap;
+  return return_value;
 }
 
-const std::vector<float>& HRTF::GetLeftEarFreqHRTF() const {
+const std::vector<Complex>& HRTF::GetLeftEarFreqHRTF(
+    const HRTFInfo& hrtf_info) const {
   assert(
-      hrtf_index_ >= 0 && hrtf_index_ < kHRTFDataSet.num_hrtfs && distance_index_>=0 && distance_index_<num_distance_intervals_);
+      hrtf_info.hrtf_index >= 0 && hrtf_info.hrtf_index < kHRTFDataSet.num_hrtfs &&
+      hrtf_info.distance_index>=0 && hrtf_info.distance_index<num_distance_intervals_);
   return
-      left_right_swap_ ?
-          hrtf_with_distance_freq_domain_[hrtf_index_][distance_index_].second :
-          hrtf_with_distance_freq_domain_[hrtf_index_][distance_index_].first;
+      hrtf_info.left_right_swap ?
+          delayed_hrtf_freq_domain_[hrtf_info.hrtf_index][hrtf_info.distance_index].second :
+          delayed_hrtf_freq_domain_[hrtf_info.hrtf_index][hrtf_info.distance_index].first;
 }
-const std::vector<float>& HRTF::GetRightEarFreqHRTF() const {
+const std::vector<Complex>& HRTF::GetRightEarFreqHRTF(const HRTFInfo& hrtf_info) const {
   assert(
-      hrtf_index_ >= 0 && hrtf_index_ < kHRTFDataSet.num_hrtfs && distance_index_>=0 && distance_index_<num_distance_intervals_);
+      hrtf_info.hrtf_index >= 0 && hrtf_info.hrtf_index < kHRTFDataSet.num_hrtfs &&
+      hrtf_info.distance_index>=0 && hrtf_info.distance_index<num_distance_intervals_);
   return
-      left_right_swap_ ?
-          hrtf_with_distance_freq_domain_[hrtf_index_][distance_index_].first :
-          hrtf_with_distance_freq_domain_[hrtf_index_][distance_index_].second;
+      hrtf_info.left_right_swap ?
+          delayed_hrtf_freq_domain_[hrtf_info.hrtf_index][hrtf_info.distance_index].first :
+          delayed_hrtf_freq_domain_[hrtf_info.hrtf_index][hrtf_info.distance_index].second;
 }
 
-float HRTF::GetDistance() const {
-  return kHRTFDataSet.distance;
+int HRTF::GetFreqHRTFSize() const {
+  return filter_freq_domain_size_;
 }
 
-int HRTF::GetFilterSize() const {
-  return filter_size_;
+int HRTF::GetTimeHRTFSize() const {
+  return filter_time_domain_size_;
 }
 
 void HRTF::ResampleHRTFs() {
@@ -113,7 +109,7 @@ void HRTF::ResampleHRTFs() {
       / static_cast<double>(kHRTFDataSet.sample_rate);
   Resampler resampler(kHRTFDataSet.fir_length, resample_factor);
 
-  filter_size_ = resampler.GetOutputLength();
+  filter_time_domain_size_ = resampler.GetOutputLength();
 
   std::vector<float> left_hrtf_float(kHRTFDataSet.fir_length);
   std::vector<float> right_hrtf_float(kHRTFDataSet.fir_length);
@@ -140,8 +136,10 @@ void HRTF::ResampleHRTFs() {
 }
 
 void HRTF::PrecalculateFreqHRTFs() {
+  filter_freq_domain_size_ = -1;
+
   FFTFilter fft_filter(config_.block_size);
-  hrtf_with_distance_freq_domain_.resize(kHRTFDataSet.num_hrtfs);
+  delayed_hrtf_freq_domain_.resize(kHRTFDataSet.num_hrtfs);
 
   for (int hrtf_itr = 0; hrtf_itr < kHRTFDataSet.num_hrtfs; ++hrtf_itr) {
     const ResampledHRTFT& left_hrtf_orig = hrtf_resampled_time_domain_[hrtf_itr]
@@ -149,7 +147,7 @@ void HRTF::PrecalculateFreqHRTFs() {
     const ResampledHRTFT& right_hrtf_orig =
         hrtf_resampled_time_domain_[hrtf_itr].second;
 
-    std::vector<ResampledHRTFPairT> hrtf_distance_freq_domain_(
+    std::vector<ResampledTimeShiftedComplexHRTFTPairT> hrtf_distance_set_freq_domain(
         num_distance_intervals_);
     for (int dist_int = 0; dist_int < num_distance_intervals_; ++dist_int) {
       float distance_meter = kHRTFDataSet.distance
@@ -174,14 +172,23 @@ void HRTF::PrecalculateFreqHRTFs() {
             right_hrtf_orig[i] * damping;
       }
 
-      fft_filter.ForwardTransform(left_hrtf_time_shift,
-                                  &hrtf_distance_freq_domain_[dist_int].first);
-      fft_filter.ForwardTransform(right_hrtf_time_shift,
-                                  &hrtf_distance_freq_domain_[dist_int].second);
+      fft_filter.ForwardTransform(
+          left_hrtf_time_shift, &hrtf_distance_set_freq_domain[dist_int].first);
+      fft_filter.ForwardTransform(
+          right_hrtf_time_shift,
+          &hrtf_distance_set_freq_domain[dist_int].second);
+
+      if (filter_freq_domain_size_ < 0) {
+        filter_freq_domain_size_ = hrtf_distance_set_freq_domain[dist_int].first
+            .size();
+      }
+      assert(
+          hrtf_distance_set_freq_domain[dist_int].first.size()==filter_freq_domain_size_);
+      assert(
+          hrtf_distance_set_freq_domain[dist_int].second.size()==filter_freq_domain_size_);
     }
 
-    hrtf_with_distance_freq_domain_[hrtf_itr].swap(
-        hrtf_distance_freq_domain_);
+    delayed_hrtf_freq_domain_[hrtf_itr].swap(hrtf_distance_set_freq_domain);
 
   }
 }

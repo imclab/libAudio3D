@@ -2,6 +2,7 @@
 #define FFT_FILTER_H_
 
 #include <vector>
+#include "common.h""
 
 using std::vector;
 
@@ -13,15 +14,13 @@ class FFTFilter {
   virtual ~FFTFilter();
 
   void SetTimeDomainKernel(const vector<float>& kernel);
-  void AddTimeDomainKernel(const vector<float>& kernel);
 
-  void SetFreqDomainKernel(const vector<float>& kernel);
-  void AddFreqDomainKernel(const vector<float>& kernel);
+  void SetFreqDomainKernel(const vector<Complex>& kernel);
 
   void ForwardTransform(const vector<float>& time_signal,
-                        vector<float>* freq_signal) const;
-  void InverseTransform(const vector<float>& freq_signal,
-                        vector<float>* time_signal) const;
+                           vector<Complex>* freq_signal) const;
+  void InverseTransform(const vector<Complex>& freq_signal,
+                           vector<float>* time_signal) const;
 
   void AddSignalBlock(const vector<float>& signal_block);
 

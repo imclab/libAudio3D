@@ -12,14 +12,16 @@ find_package(FLANN 1.7.0 REQUIRED)
 include_directories(SYSTEM 
                     ${FLANN_INCLUDE_DIRS}
                     ${LIBSAMPLERATE_INCLUDE_DIRS}
-                    ${Audio3D_SOURCE_DIR}/kissfft
+                    ${Audio3D_SOURCE_DIR}/third_party/kissfft
                     ${Audio3D_SOURCE_DIR}/include 
                     ${Audio3D_SOURCE_DIR}/data 
                    )
 
 add_definitions( ${LIBRESAMPLE_DEFINITIONS} )
 
-add_library(kissfft kissfft/kiss_fft.c kissfft/kiss_fftr.c)
+ADD_SUBDIRECTORY (third_party/kissfft)
+ADD_SUBDIRECTORY (third_party/portaudio)
+
 add_library (fft_filter src/fft_filter_impl.cpp src/fft_filter.cpp)
 target_link_libraries (fft_filter kissfft)  
 
@@ -32,8 +34,10 @@ if(USE_MIT_KEMAR_DATASET)
 endif(USE_MIT_KEMAR_DATASET)
 target_link_libraries(hrtf resampler)
 
-add_library (${PROJECT_NAME} src/hrtf_filter.cpp
+add_library (${PROJECT_NAME} src/common.cpp
+                             src/hrtf_filter.cpp
                              src/reberation.cpp
+                             src/audio_render.cpp
             ) 
 target_link_libraries(${PROJECT_NAME} hrtf fft_filter)
 

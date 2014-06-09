@@ -9,7 +9,6 @@ FFTFilterImpl::FFTFilterImpl(int filter_len)
     : max_kernel_len_(filter_len),
       fft_len_(filter_len * 2),
       filter_state_(filter_len, 0.0f),
-      kernel_defined_(false),
       kernel_time_domain_buffer_(fft_len_),
       kernel_freq_domain_buffer_(fft_len_ / 2 + 1),
       buffer_selector_(0),
@@ -32,23 +31,22 @@ FFTFilterImpl::~FFTFilterImpl() {
 
 void FFTFilterImpl::Init() {
   // Initialize all buffers with zeros.
-  memset(&kernel_time_domain_buffer_[0], 0, sizeof(kiss_fft_scalar) * fft_len_);
+  memset(&kernel_time_domain_buffer_[0], 0, sizeof(kiss_fft_scalar) * kernel_time_domain_buffer_.size());
   memset(&kernel_freq_domain_buffer_[0], 0,
-         sizeof(kiss_fft_cpx) * (fft_len_ / 2 + 1));
+         sizeof(kiss_fft_cpx) * kernel_freq_domain_buffer_.size());
   for (int i = 0; i < 2; ++i) {
     memset(&signal_time_domain_buffer_[i][0], 0,
-           sizeof(kiss_fft_scalar) * fft_len_);
+           sizeof(kiss_fft_scalar) * signal_time_domain_buffer_.size());
     memset(&signal_freq_domain_buffer_[i][0], 0,
-           sizeof(kiss_fft_cpx) * (fft_len_ / 2 + 1));
+           sizeof(kiss_fft_cpx) * signal_freq_domain_buffer_.size());
   }
 }
 
 void FFTFilterImpl::ForwardTransform(const vector<float>& time_signal,
-                                     vector<float>* freq_signal) const {
+                                     vector<Complex>* freq_signal) const {
   assert(freq_signal);
   assert(
-      time_signal.size() <= max_kernel_len_
-          && "Kernel size must be <= max_kernel_len_");
+      time_signal.size() <= max_kernel_len_ && "Kernel size must be <= max_kernel_len_");
 
   vector<kiss_fft_scalar> time_domain_buffer(fft_len_);
   VectorCopyWithZeroPadding(time_signal, &time_domain_buffer);
@@ -58,30 +56,20 @@ void FFTFilterImpl::ForwardTransform(const vector<float>& time_signal,
   // Perform forward FFT transform
   kiss_fftr(forward_fft_, &time_domain_buffer[0], &freq_domain_buffer[0]);
 
-  freq_signal->resize(fft_len_ + 2);
-  vector<float>::iterator freq_out_itr = freq_signal->begin();
+  freq_signal->resize(freq_domain_buffer.size());
   for (int freq_c = 0; freq_c < freq_domain_buffer.size(); ++freq_c) {
-    *freq_out_itr = freq_domain_buffer[freq_c].r;
-    ++freq_out_itr;
-    *freq_out_itr = freq_domain_buffer[freq_c].i;
-    ++freq_out_itr;
+    (*freq_signal)[freq_c].real(freq_domain_buffer[freq_c].r);
+    (*freq_signal)[freq_c].imag(freq_domain_buffer[freq_c].i);
   }
 }
-void FFTFilterImpl::InverseTransform(const vector<float>& freq_signal,
+void FFTFilterImpl::InverseTransform(const vector<Complex>& freq_signal,
                                      vector<float>* time_signal) const {
   assert(time_signal);
   assert(
-      freq_signal.size() == fft_len_ + 2
-          && "Frequency domain signal must match fft_len_+2");
+      freq_signal.size() == fft_len_ / 2 + 1 && "Frequency domain signal must match fft_len_+2");
 
-  vector<kiss_fft_cpx> freq_domain_buffer(fft_len_ / 2 + 1);
-  vector<float>::const_iterator freq_in_itr = freq_signal.begin();
-  for (int freq_c = 0; freq_c < freq_domain_buffer.size(); ++freq_c) {
-    freq_domain_buffer[freq_c].r = *freq_in_itr;
-    ++freq_in_itr;
-    freq_domain_buffer[freq_c].i = *freq_in_itr;
-    ++freq_in_itr;
-  }
+  vector<kiss_fft_cpx> freq_domain_buffer;
+  KissComplexFormatConvert(freq_signal, &freq_domain_buffer);
 
   time_signal->resize(fft_len_);
   // Perform inverse FFT transform of filtered_freq_domain_buffer_ and store result back in signal_time_domain_buffer_
@@ -102,62 +90,19 @@ void FFTFilterImpl::InverseFFTScaling(vector<float>* signal) const {
 
 void FFTFilterImpl::SetTimeDomainKernel(const std::vector<float>& kernel) {
   assert(
-      kernel.size() <= max_kernel_len_
-          && "Kernel size must be <= max_kernel_len_");
+      kernel.size() <= max_kernel_len_ && "Kernel size must be <= max_kernel_len_");
 
   VectorCopyWithZeroPadding(kernel, &kernel_time_domain_buffer_);
 
   // Perform forward FFT transform
   kiss_fftr(forward_fft_, &kernel_time_domain_buffer_[0],
             &kernel_freq_domain_buffer_[0]);
-
-  kernel_defined_ = true;
 }
 
-void FFTFilterImpl::AddTimeDomainKernel(const vector<float>& kernel) {
-  vector<kiss_fft_cpx> temp_freq_domain_buffer(fft_len_ / 2 + 1);
-
-  VectorCopyWithZeroPadding(kernel, &kernel_time_domain_buffer_);
-
-  // Perform forward FFT transform
-  kiss_fftr(forward_fft_, &kernel_time_domain_buffer_[0],
-            &temp_freq_domain_buffer[0]);
-
-  // Complex multiplication in frequency domain with transformed kernel.
-  ComplexVectorProduct(temp_freq_domain_buffer, kernel_freq_domain_buffer_,
-                       &kernel_freq_domain_buffer_);
-
-}
-
-void FFTFilterImpl::SetFreqDomainKernel(const std::vector<float>& kernel) {
+void FFTFilterImpl::SetFreqDomainKernel(const std::vector<Complex>& kernel) {
   assert(kernel.size() == fft_len_ + 2);
 
-  vector<float>::const_iterator kernel_itr = kernel.begin();
-  for (int freq_c = 0; freq_c < kernel_freq_domain_buffer_.size(); ++freq_c) {
-    kernel_freq_domain_buffer_[freq_c].r = *kernel_itr;
-    ++kernel_itr;
-    kernel_freq_domain_buffer_[freq_c].i = *kernel_itr;
-    ++kernel_itr;
-  }
-
-  kernel_defined_ = true;
-}
-
-void FFTFilterImpl::AddFreqDomainKernel(const vector<float>& kernel) {
-  vector<kiss_fft_cpx> temp_freq_domain_buffer(fft_len_ / 2 + 1);
-
-  vector<float>::const_iterator kernel_itr = kernel.begin();
-  for (int freq_c = 0; freq_c < kernel_freq_domain_buffer_.size(); ++freq_c) {
-    temp_freq_domain_buffer[freq_c].r = *kernel_itr;
-    ++kernel_itr;
-    temp_freq_domain_buffer[freq_c].i = *kernel_itr;
-    ++kernel_itr;
-  }
-
-  // Complex multiplication in frequency domain with transformed kernel.
-  ComplexVectorProduct(temp_freq_domain_buffer, kernel_freq_domain_buffer_,
-                       &kernel_freq_domain_buffer_);
-
+  KissComplexFormatConvert(kernel, &kernel_freq_domain_buffer_);;
 }
 
 void FFTFilterImpl::VectorCopyWithZeroPadding(
@@ -172,9 +117,7 @@ void FFTFilterImpl::VectorCopyWithZeroPadding(
 
 void FFTFilterImpl::AddSignalBlock(const vector<float>& signal_block) {
   assert(
-      signal_block.size() == max_kernel_len_
-          && "Signal block size must match filter length");
-  assert(kernel_defined_ && "No suitable kernel defined");
+      signal_block.size() == max_kernel_len_ && "Signal block size must match filter length");
 
   // Switch buffer selector
   buffer_selector_ = !buffer_selector_;
@@ -201,6 +144,42 @@ void FFTFilterImpl::AddSignalBlock(const vector<float>& signal_block) {
   InverseFFTScaling(&time_domain_buffer);
 }
 
+void FFTFilterImpl::GetResult(vector<float>* signal_block) {
+  assert(signal_block);
+  signal_block->resize(max_kernel_len_);
+
+  int curr_buf = buffer_selector_;
+  int prev_buf = !buffer_selector_;
+  for (int i = 0; i < max_kernel_len_; ++i) {
+    (*signal_block)[i] = signal_time_domain_buffer_[curr_buf][i]
+        + signal_time_domain_buffer_[prev_buf][i + max_kernel_len_];  // Add overlap from previous FFT transform.
+  }
+}
+
+void FFTFilterImpl::KissComplexFormatConvert(const vector<kiss_fft_cpx>& input,
+                                             vector<Complex>* output) const {
+  assert(output);
+  output->clear();
+  output->reserve(input.size());
+  for (int i = 0; i < input.size(); ++i) {
+    const kiss_fft_cpx& kiss_complex = input[i];
+    output->push_back(Complex(kiss_complex.r, kiss_complex.i));
+  }
+}
+
+void FFTFilterImpl::KissComplexFormatConvert(
+    const vector<Complex>& input, vector<kiss_fft_cpx>* output) const {
+  assert(output);
+  output->clear();
+  output->resize(input.size());
+  for (int i = 0; i < input.size(); ++i) {
+    const Complex& std_complex = input[i];
+    kiss_fft_cpx& kiss_complex = (*output)[i];
+    kiss_complex.r = std_complex.real();
+    kiss_complex.i = std_complex.imag();
+  }
+}
+
 void FFTFilterImpl::ComplexVectorProduct(const vector<kiss_fft_cpx>& input_a,
                                          const vector<kiss_fft_cpx>& input_b,
                                          vector<kiss_fft_cpx>* result) const {
@@ -215,18 +194,6 @@ void FFTFilterImpl::ComplexVectorProduct(const vector<kiss_fft_cpx>& input_a,
         + input_a[i].i * input_b[i].r;
     (*result)[i].r = result_real;
     (*result)[i].i = result_imag;
-  }
-}
-
-void FFTFilterImpl::GetResult(vector<float>* signal_block) {
-  assert(signal_block);
-  signal_block->resize(max_kernel_len_);
-
-  int curr_buf = buffer_selector_;
-  int prev_buf = !buffer_selector_;
-  for (int i = 0; i < max_kernel_len_; ++i) {
-    (*signal_block)[i] = signal_time_domain_buffer_[curr_buf][i]
-        + signal_time_domain_buffer_[prev_buf][i + max_kernel_len_];  // Add overlap from previous FFT transform.
   }
 }
 

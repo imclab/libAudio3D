@@ -6,23 +6,19 @@
 
 class RoomModel {
  public:
-  RoomModel(int reflection_order);
+  RoomModel();
   virtual ~RoomModel();
-
-  void SetSourcePosition(float x, float y, float z);
-  void SetSourcePosition(const Point3D& source_pos);
 
   void DefineBox(float width, float height, float depth, float damping);
   void AddAcousticWall(float a, float b, float c, float d, float damping);
+  void Reset();
 
-  const std::vector<AcousticSource>& RenderReflections();
+  bool WallsHaveChanged() const;
+  const std::vector<WallModel>& GetWalls() const;
+
  private:
-  Point3D source_pos_;
-  bool source_pos_changed_;
-  int reflection_order_;
+  mutable bool walls_have_changed_;
   std::vector<WallModel> walls_;
-
-  std::vector<AcousticSource> acoustic_sources_;
 };
 
 #endif  // ROOM_MODEL_H_

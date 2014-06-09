@@ -6,7 +6,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include "audio_3d.h"
+#include "audio_render.h"
 
 #include "portaudio.h"
 
@@ -65,7 +65,7 @@ int main(void)
     PaError err;
 
     bool keep_running = true;
-	Audio3DSource audio_3d(kSampleRate, kFramesPerBuffer);
+    AudioRender audio_3d(kSampleRate, kFramesPerBuffer);
 
     err = Pa_Initialize();
     if( err != paNoError ) goto error;

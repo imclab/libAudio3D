@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include "common.h"
 
 #include "gtest/gtest.h"
 #include "fft_filter.h"
@@ -63,7 +64,7 @@ TEST(FFTFilterTest, TransformTest) {
   for (int i=0; i<time_domain_kernel.size(); ++i) {
 	  time_domain_kernel[i] = sin(i);  // some floats
   }
-  vector<float> freq_domain_kernel;
+  vector<Complex> freq_domain_kernel;
   fft_filter.ForwardTransform(time_domain_kernel, &freq_domain_kernel);
   vector<float> inv_domain_kernel;
   fft_filter.InverseTransform(freq_domain_kernel, &inv_domain_kernel);

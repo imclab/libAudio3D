@@ -4,51 +4,32 @@
 #include "hrtf.h"
 #include "fft_filter.h"
 #include "reberation.h"
+#include "common.h"
 
 HRTFFilter::HRTFFilter(const Audio3DConfigT& config)
     : config_(config),
-      elevation_deg_(0.0f),
-      azimuth_deg_(0.0f),
-      distance_(0.0f),
-      hrtf_(0),
+      switch_filters_(false),
       left_hrtf_filter_(0),
       right_hrtf_filter_(0) {
   prev_signal_block_.resize(config_.block_size, 0.0f);
 
   CalculateXFadeWindow();
 
-  hrtf_ = new HRTF(config_);
   left_hrtf_filter_ = new FFTFilter(config_.block_size);
   right_hrtf_filter_ = new FFTFilter(config_.block_size);
-
-  left_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetLeftEarFreqHRTF());
-  right_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetRightEarFreqHRTF());
-
-  int reberation_size = 2048 * 2;
-  float reberation_duration = 0.100;
-  reberation_ = new Reberation(reberation_size, config_.sample_rate,
-                               reberation_duration);
 }
 
 HRTFFilter::~HRTFFilter() {
-  delete hrtf_;
   delete left_hrtf_filter_;
   delete right_hrtf_filter_;
-  delete reberation_;
 }
 
-void HRTFFilter::SetSourcePosition(int x, int y, int z) {
-  float distance = sqrt(x * x + y * y + z * z);
-  float elevation_deg = acos(z / distance);
-  float azimuth_deg = atan2(y, x);
-  SetSourceDirection(elevation_deg, azimuth_deg, distance);
-}
-
-void HRTFFilter::SetSourceDirection(float elevation_deg, float azimuth_deg,
-                                         float distance) {
-  elevation_deg_ = elevation_deg;
-  azimuth_deg_ = azimuth_deg;
-  distance_ = distance;
+void HRTFFilter::SetFilterFreqDomain(std::vector<Complex>* left_filter,
+                                     std::vector<Complex>* right_filter) {
+  assert(left_filter&&right_filter);
+  next_hrtf_left_filter_.swap(*left_filter);
+  next_hrtf_right_filter_.swap(*right_filter);
+  switch_filters_ = true;
 }
 
 void HRTFFilter::CalculateXFadeWindow() {
@@ -66,23 +47,18 @@ void HRTFFilter::ProcessBlock(const std::vector<float>&input,
   assert(output_left != 0 && output_right != 0);
 
   left_hrtf_filter_->AddSignalBlock(input);
+  right_hrtf_filter_->AddSignalBlock(input);
 
   std::vector<float> current_hrtf_output_left;
   left_hrtf_filter_->GetResult(&current_hrtf_output_left);
-
-  right_hrtf_filter_->AddSignalBlock(input);
-
   std::vector<float> current_hrtf_output_right;
   right_hrtf_filter_->GetResult(&current_hrtf_output_right);
 
-  bool new_hrtf_selected = hrtf_->SetSourceDirection(elevation_deg_, azimuth_deg_, distance_);
-  if (!new_hrtf_selected) {
-    output_left->swap(current_hrtf_output_left);
-    output_right->swap(current_hrtf_output_right);
-  } else {
+  if (switch_filters_) {
+    switch_filters_ = false;
     // Update filter kernels
-    left_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetLeftEarFreqHRTF());
-    right_hrtf_filter_->SetFreqDomainKernel(hrtf_->GetRightEarFreqHRTF());
+    left_hrtf_filter_->SetFreqDomainKernel(next_hrtf_left_filter_);
+    right_hrtf_filter_->SetFreqDomainKernel(next_hrtf_right_filter_);
     // Update filter state with previous signal block
     left_hrtf_filter_->AddSignalBlock(prev_signal_block_);
     right_hrtf_filter_->AddSignalBlock(prev_signal_block_);
@@ -102,12 +78,12 @@ void HRTFFilter::ProcessBlock(const std::vector<float>&input,
     output_right->resize(config_.block_size);
     ApplyXFadeWindow(current_hrtf_output_right, updated_hrtf_output_right,
                      output_right);
+  } else {
+    output_left->swap(current_hrtf_output_left);
+    output_right->swap(current_hrtf_output_right);
+
   }
-
   prev_signal_block_ = input;
-
-  // Reberation damping!!
-  reberation_->RenderReberation(input, output_left, output_right);
 }
 
 void HRTFFilter::ApplyXFadeWindow(const std::vector<float>& block_a,
