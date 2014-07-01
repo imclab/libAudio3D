@@ -14,7 +14,7 @@
 const int kSampleRate = 44100;
 const int kFramesPerBuffer = 256;
 
-static Point3D source_pos = {0.5, 0.5, 0.5};
+static Vec3d_f source_pos = {0.5, 0.5, 0.5};
 
 static int AudioCallback( const void *inputBuffer, void *outputBuffer,
                          unsigned long framesPerBuffer,
@@ -29,8 +29,6 @@ static int AudioCallback( const void *inputBuffer, void *outputBuffer,
     (void) statusFlags;
     AudioRender* audio_render = reinterpret_cast<AudioRender*>(userData);
     assert(audio_render!=0);
-
-    audio_render->SetSourcePosition(source_pos);
 
     std::vector<float> input(framesPerBuffer, 0.0f);
     if( inputBuffer != 0 )
@@ -67,6 +65,8 @@ int main(void)
 
     RoomModel room_model;
     room_model.DefineBox(5, 2, 3, 0.7);
+
+    room_model.SetSourcePosition(source_pos);
 
     AudioRender audio_render(config, &room_model);
 

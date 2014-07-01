@@ -35,4 +35,4 @@ add_test(
 
 
 add_executable(pa_sample pa_sample.cpp)
-target_link_libraries(pa_sample ${PROJECT_NAME} portaudio_static)
+target_link_libraries(pa_sample ${PROJECT_NAME} ${PORTAUDIO_LIBRARIES})

@@ -15,7 +15,7 @@ class HRTF {
   HRTF(const Audio3DConfigT& config);
   virtual ~HRTF();
 
-  HRTFInfo GetHRTFInfo(const Point3D& source_pos);
+  HRTFInfo GetHRTFInfo(const Vec3d_f& source_pos);
   HRTFInfo GetHRTFInfo(float elevation_deg, float azimuth_deg, float distance);
 
   const std::vector<Complex>& GetLeftEarFreqHRTF(const HRTFInfo& hrtf_info) const;

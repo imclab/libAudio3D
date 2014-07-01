@@ -39,8 +39,8 @@ void HRTF::InitNeighborSearch() {
   hrtf_nn_search_->BuildIndex();
 }
 
-HRTFInfo HRTF::GetHRTFInfo(const Point3D& source_pos) {
-  float distance = VecLen(source_pos);
+HRTFInfo HRTF::GetHRTFInfo(const Vec3d_f& source_pos) {
+  float distance = Vec3dNorm(source_pos);
   float elevation_deg = acos(source_pos.z / distance);
   float azimuth_deg = atan2(source_pos.y, source_pos.x);
   return GetHRTFInfo(elevation_deg, azimuth_deg, distance);

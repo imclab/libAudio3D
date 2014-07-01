@@ -2,7 +2,7 @@
 #include "room_model.h"
 
 RoomModel::RoomModel()
-    : walls_have_changed_(false) {
+    : model_has_changed_(false) {
 }
 
 RoomModel::~RoomModel() {
@@ -22,6 +22,8 @@ void RoomModel::DefineBox(float width, float height, float depth,
   float half_depth = 0.5 * depth;
   AddAcousticWall(0.0, 0.0, 1.0, half_depth, damping);
   AddAcousticWall(0.0, 0.0, -1.0, half_depth, damping);
+
+  model_has_changed_ = true;
 }
 
 void RoomModel::AddAcousticWall(float a, float b, float c, float d,
@@ -37,19 +39,38 @@ void RoomModel::AddAcousticWall(float a, float b, float c, float d,
   new_wall.damping = damping;
   walls_.push_back(new_wall);
 
-  walls_have_changed_ = true;
+  model_has_changed_ = true;
 }
 
 void RoomModel::Reset() {
   walls_.clear();
-  walls_have_changed_ = true;
+  model_has_changed_ = true;
 }
 
-bool RoomModel::WallsHaveChanged() const {
-  return walls_have_changed_;
+bool RoomModel::ModelHasChanged() const {
+  return model_has_changed_;
+}
+
+void RoomModel::SetModelUnchanged() {
+  model_has_changed_ = false;
 }
 
 const std::vector<WallModel>& RoomModel::GetWalls() const {
   return walls_;
 }
 
+void RoomModel::SetSourcePosition(const Vec3d_f& source_pos) {
+  source_pos_ = source_pos;
+  model_has_changed_ = true;
+}
+void RoomModel::SetListenerPosition(const Vec3d_f& listener_pos) {
+  listener_pos_ = listener_pos;
+  model_has_changed_ = true;
+}
+
+const Vec3d_f& RoomModel::GetSourcePosition() const {
+  return source_pos_;
+}
+const Vec3d_f& RoomModel::GetListenerPosition() const {
+  return listener_pos_;
+}

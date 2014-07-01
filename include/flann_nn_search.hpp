@@ -32,7 +32,7 @@ class FLANNNeighborSearch {
   // Front center is at (0, 0)
   // elevation_deg range from -90 to 90, azimuth_deg range from -180 to 180
   void AddHRTFDirection(float elevation_deg, float azimuth_deg, int index) {
-    Point3D carthesian_point_on_unit_sphere;
+    Vec3d_f carthesian_point_on_unit_sphere;
     GetPointOnUnitSphere(elevation_deg + 90.0f, azimuth_deg,
                          &carthesian_point_on_unit_sphere);
 
@@ -45,7 +45,7 @@ class FLANNNeighborSearch {
   int FindNearestHRTF(float elevation_deg, float azimuth_deg) {
     assert(flann_index_ && "FLANN index missing");
     // Flann query
-    Point3D carthesian_point_on_unit_sphere;
+    Vec3d_f carthesian_point_on_unit_sphere;
     GetPointOnUnitSphere(elevation_deg + 90.0f, azimuth_deg,
                          &carthesian_point_on_unit_sphere);
     flann::Matrix<float> query_mat(&carthesian_point_on_unit_sphere.data[0], 1,
@@ -68,7 +68,7 @@ class FLANNNeighborSearch {
 
  private:
   void GetPointOnUnitSphere(float elevation_deg, float azimuth_deg,
-                            Point3D* carthesian_point) {
+                            Vec3d_f* carthesian_point) {
     assert(carthesian_point);
 
     float elevation_rad = elevation_deg * M_PI / 180.0;
@@ -79,7 +79,7 @@ class FLANNNeighborSearch {
     carthesian_point->z = cos(elevation_rad);
   }
 
-  std::vector<Point3D> hrtf_pos_on_unit_sphere_;
+  std::vector<Vec3d_f> hrtf_pos_on_unit_sphere_;
   flann::Matrix<float> hrtf_pos_on_unit_sphere_mat_;
   std::vector<int> hrtf_indices_;
   flann::Index<flann::L2<float> >* flann_index_;

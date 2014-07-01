@@ -4,6 +4,11 @@
 #include <vector>
 #include "common.h"
 
+struct WallModel {
+  Plane plane;
+  float damping;
+};
+
 class RoomModel {
  public:
   RoomModel();
@@ -13,12 +18,23 @@ class RoomModel {
   void AddAcousticWall(float a, float b, float c, float d, float damping);
   void Reset();
 
-  bool WallsHaveChanged() const;
+  void SetSourcePosition(const Vec3d_f& source_pos);
+  void SetListenerPosition(const Vec3d_f& listener_pos);
+
+  const Vec3d_f& GetSourcePosition() const;
+  const Vec3d_f& GetListenerPosition() const;
+
+  bool ModelHasChanged() const;
+  void SetModelUnchanged();
+
   const std::vector<WallModel>& GetWalls() const;
 
  private:
-  mutable bool walls_have_changed_;
+  mutable bool model_has_changed_;
   std::vector<WallModel> walls_;
+
+  Vec3d_f source_pos_;
+  Vec3d_f listener_pos_;
 };
 
 #endif  // ROOM_MODEL_H_

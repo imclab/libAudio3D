@@ -7,7 +7,7 @@
 #include "config.h"
 #include "common.h"
 
-union Point3D;
+union Vec3d_f;
 class FFTFilter;
 class HRTF;
 class Reberation;

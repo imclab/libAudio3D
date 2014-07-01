@@ -1,33 +1,33 @@
 #include "common.h"
 #include <assert.h>
 
-Point3D operator+(const Point3D& point_a, const Point3D& point_b) {
-  Point3D ret;
+Vec3d_f operator+(const Vec3d_f& point_a, const Vec3d_f& point_b) {
+  Vec3d_f ret;
   ret.x = point_a.x + point_b.x;
   ret.y = point_a.y + point_b.y;
   ret.z = point_a.z + point_b.z;
   return ret;
 }
 
-Point3D operator-(const Point3D& point_a, const Point3D& point_b) {
-  Point3D ret;
+Vec3d_f operator-(const Vec3d_f& point_a, const Vec3d_f& point_b) {
+  Vec3d_f ret;
   ret.x = point_a.x - point_b.x;
   ret.y = point_a.y - point_b.y;
   ret.z = point_a.z - point_b.z;
   return ret;
 }
 
-std::ostream& operator<<(std::ostream& stream, const Point3D& point) {
+std::ostream& operator<<(std::ostream& stream, const Vec3d_f& point) {
   stream << "x: " << point.x << ", y: " << point.y << ", z: " << point.z;
   return stream;
 }
 
-float PointDot(const Point3D& point_a, const Point3D& point_b) {
+float Vec3dDot(const Vec3d_f& point_a, const Vec3d_f& point_b) {
   return point_a.x * point_b.x + point_a.y * point_b.y + point_a.z * point_b.z;
 }
 
-float VecLen(const Point3D& point_a) {
-  return sqrt(PointDot(point_a, point_a));
+float Vec3dNorm(const Vec3d_f& point_a) {
+  return sqrt(Vec3dDot(point_a, point_a));
 }
 
 HRTFInfo::HRTFInfo()

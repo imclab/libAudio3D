@@ -8,6 +8,7 @@ option(USE_MIT_KEMAR_DATASET  "Use MIT KEMAR HRTF dataset" ON)
 
 find_package(Libsamplerate REQUIRED) 
 find_package(FLANN 1.7.0 REQUIRED)
+find_package(PortAudio REQUIRED)
 
 include_directories(SYSTEM 
                     ${FLANN_INCLUDE_DIRS}
@@ -21,7 +22,7 @@ include_directories(SYSTEM
 add_definitions( ${LIBRESAMPLE_DEFINITIONS} )
 
 ADD_SUBDIRECTORY (third_party/kissfft)
-ADD_SUBDIRECTORY (third_party/portaudio)
+#ADD_SUBDIRECTORY (third_party/portaudio)
 
 add_library (fft_filter src/fft_filter_impl.cpp src/fft_filter.cpp)
 target_link_libraries (fft_filter kissfft)  

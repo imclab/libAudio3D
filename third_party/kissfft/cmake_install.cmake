@@ -1,4 +1,4 @@
-# Install script for directory: /home/kammerl/github/lib3DAudio/third_party/kissfft
+# Install script for directory: /Users/jkammerl/projects/lib3DAudio/third_party/kissfft
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -26,9 +26,4 @@ IF(NOT CMAKE_INSTALL_COMPONENT)
     SET(CMAKE_INSTALL_COMPONENT)
   ENDIF(COMPONENT)
 ENDIF(NOT CMAKE_INSTALL_COMPONENT)
-
-# Install shared libraries without execute permission?
-IF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
-  SET(CMAKE_INSTALL_SO_NO_EXE "1")
-ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 

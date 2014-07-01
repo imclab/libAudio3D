@@ -13,7 +13,7 @@ static const int kDimensions = 3;
 
 typedef std::complex<float> Complex;
 
-union Point3D {
+union Vec3d_f {
   float data[kDimensions];
   struct {
     float x;
@@ -22,18 +22,18 @@ union Point3D {
   };
 };
 
-Point3D operator+(const Point3D& point_a, const Point3D& point_b) ;
+Vec3d_f operator+(const Vec3d_f& point_a, const Vec3d_f& point_b) ;
 
-Point3D operator-(const Point3D& point_a, const Point3D& point_b);
+Vec3d_f operator-(const Vec3d_f& point_a, const Vec3d_f& point_b);
 
-std::ostream& operator<<(std::ostream& stream, const Point3D& point);
+std::ostream& operator<<(std::ostream& stream, const Vec3d_f& point);
 
-float PointDot(const Point3D& point_a, const Point3D& point_b);
+float Vec3dDot(const Vec3d_f& point_a, const Vec3d_f& point_b);
 
-float VecLen(const Point3D& point_a);
+float Vec3dNorm(const Vec3d_f& point_a);
 
 struct AcousticSource {
-  Point3D pos;
+  Vec3d_f pos;
   float damping;
   int reflections;
   bool do_render;
@@ -59,12 +59,6 @@ union Plane {
     float d;
   };
 };
-
-struct WallModel {
-  Plane plane;
-  float damping;
-};
-
 
 
 #endif COMMON_H_

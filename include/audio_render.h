@@ -11,27 +11,20 @@ class RoomModel;
 
 class AudioRender {
  public:
-  AudioRender(const Audio3DConfigT& config, const RoomModel* room_model);
+  AudioRender(const Audio3DConfigT& config, RoomModel* room_model);
   virtual ~AudioRender();
 
-  void SetSourcePosition(const Point3D& source_pos);
-  void SetListenerPosition(const Point3D& listener_pos);
 
   void RenderAudio(const std::vector<float>&input,
                      std::vector<float>* output_left,
                      std::vector<float>* output_right);
 
   private:
-  void Init();
-  const std::vector<AcousticSource> RenderReflections(const std::vector<WallModel>& walls) const;
+  static const std::vector<AcousticSource> RenderReflections(const RoomModel& room_model, int reflection_order);
 
   const Audio3DConfigT& config_;
 
-  const RoomModel* room_model_;  // Not owned
-
-  Point3D source_pos_;
-  Point3D listener_pos_;
-  bool source_listener_pos_changed_;
+  RoomModel* room_model_;  // Not owned
 
   std::vector<AcousticSource> acoustic_sources_;
 

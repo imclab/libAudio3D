@@ -30,19 +30,22 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/bin/cmake
+CMAKE_COMMAND = /opt/local/bin/cmake
 
 # The command to remove a file.
-RM = /usr/bin/cmake -E remove -f
+RM = /opt/local/bin/cmake -E remove -f
+
+# Escaping for special characters.
+EQUALS = =
 
 # The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+CMAKE_EDIT_COMMAND = /opt/local/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kammerl/github/lib3DAudio
+CMAKE_SOURCE_DIR = /Users/jkammerl/projects/lib3DAudio
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kammerl/github/lib3DAudio
+CMAKE_BINARY_DIR = /Users/jkammerl/projects/lib3DAudio
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -50,7 +53,7 @@ CMAKE_BINARY_DIR = /home/kammerl/github/lib3DAudio
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/local/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -60,7 +63,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/local/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -69,14 +72,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/kammerl/github/lib3DAudio && $(CMAKE_COMMAND) -E cmake_progress_start /home/kammerl/github/lib3DAudio/CMakeFiles /home/kammerl/github/lib3DAudio/third_party/portaudio/CMakeFiles/progress.marks
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kammerl/github/lib3DAudio/CMakeFiles 0
+	cd /Users/jkammerl/projects/lib3DAudio && $(CMAKE_COMMAND) -E cmake_progress_start /Users/jkammerl/projects/lib3DAudio/CMakeFiles /Users/jkammerl/projects/lib3DAudio/third_party/portaudio/CMakeFiles/progress.marks
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jkammerl/projects/lib3DAudio/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/clean
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/clean
 .PHONY : clean
 
 # The main clean target
@@ -85,22 +88,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/preinstall
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/preinstall
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/kammerl/github/lib3DAudio && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/jkammerl/projects/lib3DAudio && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 third_party/portaudio/CMakeFiles/portaudio.dir/rule:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/CMakeFiles/portaudio.dir/rule
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/CMakeFiles/portaudio.dir/rule
 .PHONY : third_party/portaudio/CMakeFiles/portaudio.dir/rule
 
 # Convenience name for target.
@@ -109,12 +112,12 @@ portaudio: third_party/portaudio/CMakeFiles/portaudio.dir/rule
 
 # fast build rule for target.
 portaudio/fast:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/build
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/build
 .PHONY : portaudio/fast
 
 # Convenience name for target.
 third_party/portaudio/CMakeFiles/portaudio_static.dir/rule:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/CMakeFiles/portaudio_static.dir/rule
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f CMakeFiles/Makefile2 third_party/portaudio/CMakeFiles/portaudio_static.dir/rule
 .PHONY : third_party/portaudio/CMakeFiles/portaudio_static.dir/rule
 
 # Convenience name for target.
@@ -123,7 +126,7 @@ portaudio_static: third_party/portaudio/CMakeFiles/portaudio_static.dir/rule
 
 # fast build rule for target.
 portaudio_static/fast:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/build
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/build
 .PHONY : portaudio_static/fast
 
 src/common/pa_allocation.o: src/common/pa_allocation.c.o
@@ -131,8 +134,8 @@ src/common/pa_allocation.o: src/common/pa_allocation.c.o
 
 # target to build an object file
 src/common/pa_allocation.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_allocation.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_allocation.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_allocation.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_allocation.c.o
 .PHONY : src/common/pa_allocation.c.o
 
 src/common/pa_allocation.i: src/common/pa_allocation.c.i
@@ -140,8 +143,8 @@ src/common/pa_allocation.i: src/common/pa_allocation.c.i
 
 # target to preprocess a source file
 src/common/pa_allocation.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_allocation.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_allocation.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_allocation.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_allocation.c.i
 .PHONY : src/common/pa_allocation.c.i
 
 src/common/pa_allocation.s: src/common/pa_allocation.c.s
@@ -149,8 +152,8 @@ src/common/pa_allocation.s: src/common/pa_allocation.c.s
 
 # target to generate assembly for a file
 src/common/pa_allocation.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_allocation.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_allocation.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_allocation.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_allocation.c.s
 .PHONY : src/common/pa_allocation.c.s
 
 src/common/pa_converters.o: src/common/pa_converters.c.o
@@ -158,8 +161,8 @@ src/common/pa_converters.o: src/common/pa_converters.c.o
 
 # target to build an object file
 src/common/pa_converters.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_converters.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_converters.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_converters.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_converters.c.o
 .PHONY : src/common/pa_converters.c.o
 
 src/common/pa_converters.i: src/common/pa_converters.c.i
@@ -167,8 +170,8 @@ src/common/pa_converters.i: src/common/pa_converters.c.i
 
 # target to preprocess a source file
 src/common/pa_converters.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_converters.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_converters.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_converters.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_converters.c.i
 .PHONY : src/common/pa_converters.c.i
 
 src/common/pa_converters.s: src/common/pa_converters.c.s
@@ -176,8 +179,8 @@ src/common/pa_converters.s: src/common/pa_converters.c.s
 
 # target to generate assembly for a file
 src/common/pa_converters.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_converters.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_converters.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_converters.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_converters.c.s
 .PHONY : src/common/pa_converters.c.s
 
 src/common/pa_cpuload.o: src/common/pa_cpuload.c.o
@@ -185,8 +188,8 @@ src/common/pa_cpuload.o: src/common/pa_cpuload.c.o
 
 # target to build an object file
 src/common/pa_cpuload.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_cpuload.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_cpuload.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_cpuload.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_cpuload.c.o
 .PHONY : src/common/pa_cpuload.c.o
 
 src/common/pa_cpuload.i: src/common/pa_cpuload.c.i
@@ -194,8 +197,8 @@ src/common/pa_cpuload.i: src/common/pa_cpuload.c.i
 
 # target to preprocess a source file
 src/common/pa_cpuload.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_cpuload.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_cpuload.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_cpuload.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_cpuload.c.i
 .PHONY : src/common/pa_cpuload.c.i
 
 src/common/pa_cpuload.s: src/common/pa_cpuload.c.s
@@ -203,8 +206,8 @@ src/common/pa_cpuload.s: src/common/pa_cpuload.c.s
 
 # target to generate assembly for a file
 src/common/pa_cpuload.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_cpuload.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_cpuload.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_cpuload.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_cpuload.c.s
 .PHONY : src/common/pa_cpuload.c.s
 
 src/common/pa_debugprint.o: src/common/pa_debugprint.c.o
@@ -212,8 +215,8 @@ src/common/pa_debugprint.o: src/common/pa_debugprint.c.o
 
 # target to build an object file
 src/common/pa_debugprint.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_debugprint.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_debugprint.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_debugprint.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_debugprint.c.o
 .PHONY : src/common/pa_debugprint.c.o
 
 src/common/pa_debugprint.i: src/common/pa_debugprint.c.i
@@ -221,8 +224,8 @@ src/common/pa_debugprint.i: src/common/pa_debugprint.c.i
 
 # target to preprocess a source file
 src/common/pa_debugprint.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_debugprint.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_debugprint.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_debugprint.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_debugprint.c.i
 .PHONY : src/common/pa_debugprint.c.i
 
 src/common/pa_debugprint.s: src/common/pa_debugprint.c.s
@@ -230,8 +233,8 @@ src/common/pa_debugprint.s: src/common/pa_debugprint.c.s
 
 # target to generate assembly for a file
 src/common/pa_debugprint.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_debugprint.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_debugprint.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_debugprint.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_debugprint.c.s
 .PHONY : src/common/pa_debugprint.c.s
 
 src/common/pa_dither.o: src/common/pa_dither.c.o
@@ -239,8 +242,8 @@ src/common/pa_dither.o: src/common/pa_dither.c.o
 
 # target to build an object file
 src/common/pa_dither.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_dither.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_dither.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_dither.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_dither.c.o
 .PHONY : src/common/pa_dither.c.o
 
 src/common/pa_dither.i: src/common/pa_dither.c.i
@@ -248,8 +251,8 @@ src/common/pa_dither.i: src/common/pa_dither.c.i
 
 # target to preprocess a source file
 src/common/pa_dither.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_dither.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_dither.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_dither.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_dither.c.i
 .PHONY : src/common/pa_dither.c.i
 
 src/common/pa_dither.s: src/common/pa_dither.c.s
@@ -257,8 +260,8 @@ src/common/pa_dither.s: src/common/pa_dither.c.s
 
 # target to generate assembly for a file
 src/common/pa_dither.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_dither.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_dither.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_dither.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_dither.c.s
 .PHONY : src/common/pa_dither.c.s
 
 src/common/pa_front.o: src/common/pa_front.c.o
@@ -266,8 +269,8 @@ src/common/pa_front.o: src/common/pa_front.c.o
 
 # target to build an object file
 src/common/pa_front.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_front.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_front.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_front.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_front.c.o
 .PHONY : src/common/pa_front.c.o
 
 src/common/pa_front.i: src/common/pa_front.c.i
@@ -275,8 +278,8 @@ src/common/pa_front.i: src/common/pa_front.c.i
 
 # target to preprocess a source file
 src/common/pa_front.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_front.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_front.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_front.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_front.c.i
 .PHONY : src/common/pa_front.c.i
 
 src/common/pa_front.s: src/common/pa_front.c.s
@@ -284,8 +287,8 @@ src/common/pa_front.s: src/common/pa_front.c.s
 
 # target to generate assembly for a file
 src/common/pa_front.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_front.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_front.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_front.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_front.c.s
 .PHONY : src/common/pa_front.c.s
 
 src/common/pa_process.o: src/common/pa_process.c.o
@@ -293,8 +296,8 @@ src/common/pa_process.o: src/common/pa_process.c.o
 
 # target to build an object file
 src/common/pa_process.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_process.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_process.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_process.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_process.c.o
 .PHONY : src/common/pa_process.c.o
 
 src/common/pa_process.i: src/common/pa_process.c.i
@@ -302,8 +305,8 @@ src/common/pa_process.i: src/common/pa_process.c.i
 
 # target to preprocess a source file
 src/common/pa_process.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_process.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_process.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_process.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_process.c.i
 .PHONY : src/common/pa_process.c.i
 
 src/common/pa_process.s: src/common/pa_process.c.s
@@ -311,8 +314,8 @@ src/common/pa_process.s: src/common/pa_process.c.s
 
 # target to generate assembly for a file
 src/common/pa_process.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_process.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_process.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_process.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_process.c.s
 .PHONY : src/common/pa_process.c.s
 
 src/common/pa_ringbuffer.o: src/common/pa_ringbuffer.c.o
@@ -320,8 +323,8 @@ src/common/pa_ringbuffer.o: src/common/pa_ringbuffer.c.o
 
 # target to build an object file
 src/common/pa_ringbuffer.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_ringbuffer.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_ringbuffer.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_ringbuffer.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_ringbuffer.c.o
 .PHONY : src/common/pa_ringbuffer.c.o
 
 src/common/pa_ringbuffer.i: src/common/pa_ringbuffer.c.i
@@ -329,8 +332,8 @@ src/common/pa_ringbuffer.i: src/common/pa_ringbuffer.c.i
 
 # target to preprocess a source file
 src/common/pa_ringbuffer.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_ringbuffer.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_ringbuffer.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_ringbuffer.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_ringbuffer.c.i
 .PHONY : src/common/pa_ringbuffer.c.i
 
 src/common/pa_ringbuffer.s: src/common/pa_ringbuffer.c.s
@@ -338,8 +341,8 @@ src/common/pa_ringbuffer.s: src/common/pa_ringbuffer.c.s
 
 # target to generate assembly for a file
 src/common/pa_ringbuffer.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_ringbuffer.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_ringbuffer.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_ringbuffer.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_ringbuffer.c.s
 .PHONY : src/common/pa_ringbuffer.c.s
 
 src/common/pa_stream.o: src/common/pa_stream.c.o
@@ -347,8 +350,8 @@ src/common/pa_stream.o: src/common/pa_stream.c.o
 
 # target to build an object file
 src/common/pa_stream.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_stream.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_stream.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_stream.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_stream.c.o
 .PHONY : src/common/pa_stream.c.o
 
 src/common/pa_stream.i: src/common/pa_stream.c.i
@@ -356,8 +359,8 @@ src/common/pa_stream.i: src/common/pa_stream.c.i
 
 # target to preprocess a source file
 src/common/pa_stream.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_stream.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_stream.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_stream.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_stream.c.i
 .PHONY : src/common/pa_stream.c.i
 
 src/common/pa_stream.s: src/common/pa_stream.c.s
@@ -365,8 +368,8 @@ src/common/pa_stream.s: src/common/pa_stream.c.s
 
 # target to generate assembly for a file
 src/common/pa_stream.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_stream.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_stream.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_stream.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_stream.c.s
 .PHONY : src/common/pa_stream.c.s
 
 src/common/pa_trace.o: src/common/pa_trace.c.o
@@ -374,8 +377,8 @@ src/common/pa_trace.o: src/common/pa_trace.c.o
 
 # target to build an object file
 src/common/pa_trace.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_trace.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_trace.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_trace.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_trace.c.o
 .PHONY : src/common/pa_trace.c.o
 
 src/common/pa_trace.i: src/common/pa_trace.c.i
@@ -383,8 +386,8 @@ src/common/pa_trace.i: src/common/pa_trace.c.i
 
 # target to preprocess a source file
 src/common/pa_trace.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_trace.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_trace.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_trace.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_trace.c.i
 .PHONY : src/common/pa_trace.c.i
 
 src/common/pa_trace.s: src/common/pa_trace.c.s
@@ -392,8 +395,8 @@ src/common/pa_trace.s: src/common/pa_trace.c.s
 
 # target to generate assembly for a file
 src/common/pa_trace.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_trace.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_trace.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/common/pa_trace.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/common/pa_trace.c.s
 .PHONY : src/common/pa_trace.c.s
 
 src/hostapi/skeleton/pa_hostapi_skeleton.o: src/hostapi/skeleton/pa_hostapi_skeleton.c.o
@@ -401,8 +404,8 @@ src/hostapi/skeleton/pa_hostapi_skeleton.o: src/hostapi/skeleton/pa_hostapi_skel
 
 # target to build an object file
 src/hostapi/skeleton/pa_hostapi_skeleton.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.o
 .PHONY : src/hostapi/skeleton/pa_hostapi_skeleton.c.o
 
 src/hostapi/skeleton/pa_hostapi_skeleton.i: src/hostapi/skeleton/pa_hostapi_skeleton.c.i
@@ -410,8 +413,8 @@ src/hostapi/skeleton/pa_hostapi_skeleton.i: src/hostapi/skeleton/pa_hostapi_skel
 
 # target to preprocess a source file
 src/hostapi/skeleton/pa_hostapi_skeleton.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.i
 .PHONY : src/hostapi/skeleton/pa_hostapi_skeleton.c.i
 
 src/hostapi/skeleton/pa_hostapi_skeleton.s: src/hostapi/skeleton/pa_hostapi_skeleton.c.s
@@ -419,8 +422,8 @@ src/hostapi/skeleton/pa_hostapi_skeleton.s: src/hostapi/skeleton/pa_hostapi_skel
 
 # target to generate assembly for a file
 src/hostapi/skeleton/pa_hostapi_skeleton.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/hostapi/skeleton/pa_hostapi_skeleton.c.s
 .PHONY : src/hostapi/skeleton/pa_hostapi_skeleton.c.s
 
 src/os/unix/pa_unix_hostapis.o: src/os/unix/pa_unix_hostapis.c.o
@@ -428,8 +431,8 @@ src/os/unix/pa_unix_hostapis.o: src/os/unix/pa_unix_hostapis.c.o
 
 # target to build an object file
 src/os/unix/pa_unix_hostapis.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.o
 .PHONY : src/os/unix/pa_unix_hostapis.c.o
 
 src/os/unix/pa_unix_hostapis.i: src/os/unix/pa_unix_hostapis.c.i
@@ -437,8 +440,8 @@ src/os/unix/pa_unix_hostapis.i: src/os/unix/pa_unix_hostapis.c.i
 
 # target to preprocess a source file
 src/os/unix/pa_unix_hostapis.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.i
 .PHONY : src/os/unix/pa_unix_hostapis.c.i
 
 src/os/unix/pa_unix_hostapis.s: src/os/unix/pa_unix_hostapis.c.s
@@ -446,8 +449,8 @@ src/os/unix/pa_unix_hostapis.s: src/os/unix/pa_unix_hostapis.c.s
 
 # target to generate assembly for a file
 src/os/unix/pa_unix_hostapis.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_hostapis.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_hostapis.c.s
 .PHONY : src/os/unix/pa_unix_hostapis.c.s
 
 src/os/unix/pa_unix_util.o: src/os/unix/pa_unix_util.c.o
@@ -455,8 +458,8 @@ src/os/unix/pa_unix_util.o: src/os/unix/pa_unix_util.c.o
 
 # target to build an object file
 src/os/unix/pa_unix_util.c.o:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.o
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.o
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.o
 .PHONY : src/os/unix/pa_unix_util.c.o
 
 src/os/unix/pa_unix_util.i: src/os/unix/pa_unix_util.c.i
@@ -464,8 +467,8 @@ src/os/unix/pa_unix_util.i: src/os/unix/pa_unix_util.c.i
 
 # target to preprocess a source file
 src/os/unix/pa_unix_util.c.i:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.i
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.i
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.i
 .PHONY : src/os/unix/pa_unix_util.c.i
 
 src/os/unix/pa_unix_util.s: src/os/unix/pa_unix_util.c.s
@@ -473,8 +476,8 @@ src/os/unix/pa_unix_util.s: src/os/unix/pa_unix_util.c.s
 
 # target to generate assembly for a file
 src/os/unix/pa_unix_util.c.s:
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.s
-	cd /home/kammerl/github/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio.dir/build.make third_party/portaudio/CMakeFiles/portaudio.dir/src/os/unix/pa_unix_util.c.s
+	cd /Users/jkammerl/projects/lib3DAudio && $(MAKE) -f third_party/portaudio/CMakeFiles/portaudio_static.dir/build.make third_party/portaudio/CMakeFiles/portaudio_static.dir/src/os/unix/pa_unix_util.c.s
 .PHONY : src/os/unix/pa_unix_util.c.s
 
 # Help Target
@@ -537,6 +540,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/kammerl/github/lib3DAudio && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/jkammerl/projects/lib3DAudio && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
